@@ -110,6 +110,11 @@ input[type=range]{padding:0}
 .btn:disabled{opacity:.6}
 .empty{padding:12px;border-radius:14px;background:#fff;border:1px dashed var(--line);font-size:13px;color:var(--muted);margin:8px 0}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+main{padding-bottom:90px}
+.permgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;margin-top:6px}
+.permgrid label{display:flex;align-items:center;gap:8px;margin:4px 0;font-weight:700;color:var(--ink)}
+.permgrid input{width:20px;height:20px;padding:0;flex:none}
+.hide{display:none!important}
 </style>
 </head>
 <body>
@@ -133,12 +138,12 @@ input[type=range]{padding:0}
 <main>
 <section id="home" class="page active">
  <div class="grid2" id="homeMetrics"></div>
- <div class="sectionTitle">Савдо жараёни</div>
- <div class="flow" id="flow"></div>
+ <div id="flowWrap"><div class="sectionTitle">Савдо жараёни</div>
+ <div class="flow" id="flow"></div></div>
  <div class="sectionTitle">Бугунги ишлар</div>
  <div id="todayList"></div>
- <div class="sectionTitle">Молия</div>
- <div class="card" id="moneyBrief"></div>
+ <div id="moneyWrap"><div class="sectionTitle">Молия</div>
+ <div class="card" id="moneyBrief"></div></div>
 </section>
 
 <section id="leads" class="page">
@@ -171,11 +176,21 @@ input[type=range]{padding:0}
 <section id="more" class="page">
  <div class="card role"><h3>VAYQEN CRM</h3><div class="meta">Лидлар, буюртмалар, тўловлар, ўлчов ва монтаж вазифалари, AI жавоб ёрдамчиси.</div></div>
  <div class="card role" style="margin-top:10px"><h3>Кейинги босқичлар</h3><div class="meta">Ходимлар ва рухсатлар.</div></div>
+ <div id="staffWrap" class="hide"><div class="sectionTitle">Ходимлар</div>
+  <div class="card"><h3>Янги ходим</h3>
+   <label>Email</label><input id="sEmail" type="email" autocomplete="off" placeholder="xodim@gmail.com">
+   <label>Вақтинча парол (камида 8 белги)</label><input id="sPass" type="text" autocomplete="off" placeholder="Масалан: Lesel2026!">
+   <label>Лавозими</label><select id="sRole"></select>
+   <button class="btn primary" onclick="addStaff(this)">+ Ходим қўшиш</button>
+   <div class="meta" style="margin-top:8px">Ходим шу email ва парол билан CRM’га киради. Паролни унга ўзингиз беринг.</div>
+  </div>
+  <div id="staffList"></div>
+ </div>
  <div class="sectionTitle">Маълумот нусхаси</div><div class="card"><button class="btn soft" onclick="exportData()">CRM маълумотларини экспорт қилиш</button></div>
 </section>
 </main>
 
-<button class="fab" onclick="go('leads')" aria-label="Янги лид">+</button>
+<button class="fab" id="fab" onclick="go('leads')" aria-label="Янги лид">+</button>
 
 <div class="bottomnav">
  <button class="active" data-page="home" onclick="go('home',this)"><span>⌂</span>Bosh sahifa</button>
@@ -192,11 +207,24 @@ input[type=range]{padding:0}
 const SUPABASE_URL="https://cjhktphfgneamwnhsykq.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_lgjLjQ4mmDRJfDBJdoJF_Q_hoSfnNUn";
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-let companyId=null,companies=[],customers=[],leads=[],orders=[],jobs=[],payments=[],currentUser=null,customerMap=new Map(),lastAiReply="";
+let myRole="manager",myPerms={},staff=[],companyId=null,companies=[],customers=[],leads=[],orders=[],jobs=[],payments=[],currentUser=null,customerMap=new Map(),lastAiReply="";
 const leadStatus={new:"Янги",contacted:"Алоқа қилинган",qualified:"Сараланган",proposal:"Таклиф берилган",won:"Сотув бўлган",lost:"Йўқотилган"};
 const orderStatus={new:"Янги",measurement:"Ўлчов",quotation:"Нарх таклифи",confirmed:"Тасдиқланган",production:"Ишлаб чиқариш",installation:"Монтаж",completed:"Бажарилган",cancelled:"Бекор қилинган"};
 const jobStatus={scheduled:"Режада",in_progress:"Жараёнда",completed:"Бажарилди",cancelled:"Бекор қилинди"};
 const jobKind={measurement:"Ўлчов",installation:"Монтаж"};
+const roleName={manager:"Менежер",sales:"Сотувчи",installer:"Монтажчи",production:"Ишлаб чиқариш",finance:"Молия"};
+const permAct={view:"Кўриш",create:"Яратиш",edit:"Таҳрирлаш",assign:"Тайинлаш",submit:"Натижа киритиш",cancel:"Бекор қилиш"};
+function rolePreset(role){const p={};["measurement","installation"].forEach(k=>Object.keys(permAct).forEach(a=>p[k+"_"+a]=role==="manager"));
+ const on=(...k)=>k.forEach(x=>p[x]=true);
+ if(role==="sales")on("measurement_view","measurement_create","installation_view","installation_create");
+ if(role==="installer")on("measurement_view","measurement_submit","installation_view","installation_submit");
+ if(role==="production")on("measurement_view","installation_view");return p}
+const isManager=()=>myRole==="manager";
+const canSell=()=>isManager()||myRole==="sales";
+const canFinance=()=>isManager()||myRole==="finance";
+const canJob=(kind,act)=>isManager()||!!myPerms[kind+"_"+act];
+const staffName=id=>{const m=staff.find(x=>x.user_id===id);return m?m.email:(id===currentUser?.id?"Сиз":"")};
+async function callFn(name,body){const {data,error}=await sb.functions.invoke(name,{body});if(!error)return{data};let msg=error.message;try{const b=await error.context.json();if(b?.error)msg=b.error}catch{}return{error:msg}}
 const curLabel={UZS:"сўм",USD:"$",EUR:"€"};
 const payKind={prepayment:"Бўнак",payment:"Тўлов",refund:"Қайтариш"};
 const payMethod={cash:"Нақд",card:"Карта",transfer:"Ўтказма",click:"Click",payme:"Payme"};
@@ -232,7 +260,7 @@ async function sendPasswordReset(){
  authMessage(error?"Тиклаш хатини юбориб бўлмади.":"Агар бу email рўйхатда бўлса, тиклаш ҳаволаси юборилди.",!!error);
 }
 async function signOut(){
- await sb.auth.signOut();companyId=null;companies=[];customers=[];leads=[];orders=[];jobs=[];currentUser=null;
+ await sb.auth.signOut();myRole="manager";myPerms={};staff=[];companyId=null;companies=[];customers=[];leads=[];orders=[];jobs=[];currentUser=null;
  $("appShell").style.display="none";$("loginWrap").style.display="block";
 }
 async function boot(){
@@ -256,13 +284,18 @@ async function loadData(){
   sb.from("crm_customers").select("id,name,phone,address,notes,created_at").eq("company_id",companyId).order("created_at",{ascending:false}),
   sb.from("crm_leads").select("id,customer_id,title,source,notes,status,estimated_amount,created_at").eq("company_id",companyId).order("created_at",{ascending:false}),
   sb.from("crm_orders").select("id,customer_id,lead_id,reference_code,title,description,status,amount,currency,created_at").eq("company_id",companyId).order("created_at",{ascending:false}),
-  sb.from("crm_jobs").select("id,order_id,kind,title,scheduled_at,due_date,address,contact_phone,width_cm,projection_cm,notes,result_notes,progress,status,created_at").eq("company_id",companyId).order("scheduled_at",{ascending:true,nullsFirst:false}),
+  sb.from("crm_jobs").select("id,order_id,kind,title,scheduled_at,due_date,assigned_to,address,contact_phone,width_cm,projection_cm,notes,result_notes,progress,status,created_at").eq("company_id",companyId).order("scheduled_at",{ascending:true,nullsFirst:false}),
   sb.from("crm_payments").select("id,order_id,kind,method,amount,currency,paid_at,note,created_at").eq("company_id",companyId).order("paid_at",{ascending:false})
  ]);
  for(const r of [c,l,o,j,p])if(r.error)throw r.error;
  customers=c.data||[];leads=l.data||[];orders=o.data||[];jobs=j.data||[];payments=p.data||[];
  customerMap=new Map(customers.map(x=>[x.id,x]));
- updateCompanyLabel();render();
+ const [mr,pr]=await Promise.all([
+  sb.from("company_members").select("role").eq("company_id",companyId).eq("user_id",currentUser.id).maybeSingle(),
+  sb.from("crm_member_permissions").select("*").eq("company_id",companyId).eq("user_id",currentUser.id).maybeSingle()]);
+ myRole=mr.data?.role||"manager";myPerms=pr.data||{};
+ if(isManager()){const r=await callFn("crm-members",{action:"list",company_id:companyId});staff=r.data?.members||[]}else staff=[];
+ updateCompanyLabel();applyRoleUI();render();
 }
 async function reload(){try{await loadData()}catch(e){reportError("Маълумотни янгилашда хатолик",e)}}
 function updateCompanyLabel(){
@@ -282,6 +315,19 @@ function go(id,btn){
  window.scrollTo({top:0,behavior:"smooth"});
 }
 
+function applyRoleUI(){
+ const show=(sel,on)=>document.querySelectorAll(sel).forEach(e=>e.classList.toggle("hide",!on));
+ const anyJob=["measurement","installation"].some(k=>canJob(k,"view"));
+ show('.bottomnav [data-page=leads]',canSell());show('.bottomnav [data-page=orders]',canSell()||canFinance());show('.bottomnav [data-page=work]',anyJob);
+ show('#fab',canSell());show('#flowWrap',canSell());show('#moneyWrap',canSell()||canFinance());show('#staffWrap',isManager());
+ $("userLabel").textContent=(currentUser.email||"")+(isManager()?"":" • "+roleName[myRole]);
+ if(!$("sRole").options.length)$("sRole").innerHTML=opts(roleName,"installer");
+}
+function renderStaff(){
+ if(!isManager())return;
+ $("staffList").innerHTML=staff.map(m=>'<div class="item" data-staff="'+esc(m.user_id)+'"><div class="itemtop"><h4>'+esc(m.email||"—")+(m.is_me?" (сиз)":"")+'</h4><span class="pill">'+esc(roleName[m.role]||m.role)+'</span></div><div class="meta">Қўшилган: '+fmtDate(m.created_at)+'</div></div>').join("")||'<div class="empty">Ҳали ходим қўшилмаган. Юқоридаги шакл орқали биринчи ходимни қўшинг.</div>';
+}
+
 /* ---------- Кўриниш ---------- */
 function leadCard(l){
  const c=customerMap.get(l.customer_id)||{};
@@ -294,12 +340,12 @@ function orderCard(o){
 }
 function jobCard(j){
  const o=orders.find(x=>x.id===j.order_id)||{},c=customerMap.get(o.customer_id)||{};
- return '<div class="item" data-job="'+esc(j.id)+'"><div class="itemtop"><h4>'+esc(j.title)+'</h4><span class="pill">'+esc(jobStatus[j.status]||j.status)+'</span></div><div class="meta">'+esc(fmtDT(j.scheduled_at))+'<br>'+esc(j.address||c.address||"Манзил йўқ")+' • '+esc(j.contact_phone||c.phone||"")+'</div><div class="progress"><span style="width:'+(Number(j.progress)||0)+'%"></span></div></div>';
+ return '<div class="item" data-job="'+esc(j.id)+'"><div class="itemtop"><h4>'+esc(j.title)+'</h4><span class="pill">'+esc(jobStatus[j.status]||j.status)+'</span></div><div class="meta">'+esc(fmtDT(j.scheduled_at))+'<br>'+esc(j.address||c.address||"Манзил йўқ")+' • '+esc(j.contact_phone||c.phone||"")+(j.assigned_to?'<br>Масъул: '+esc(j.assigned_to===currentUser.id?"Сиз":(staffName(j.assigned_to)||"ходим")):"")+'</div><div class="progress"><span style="width:'+(Number(j.progress)||0)+'%"></span></div></div>';
 }
 function render(){
  const activeOrders=orders.filter(o=>!["completed","cancelled"].includes(o.status));
  const openJobs=jobs.filter(j=>["scheduled","in_progress"].includes(j.status));
- const metrics=[["Мижозлар",customers.length],["Янги лидлар",leads.filter(x=>x.status==="new").length],["Фаол буюртмалар",activeOrders.length],["Очиқ вазифалар",openJobs.length]];
+ const metrics=canSell()||canFinance()?[["Мижозлар",customers.length],["Янги лидлар",leads.filter(x=>x.status==="new").length],["Фаол буюртмалар",activeOrders.length],["Очиқ вазифалар",openJobs.length]]:[["Менга тайинланган",openJobs.filter(j=>j.assigned_to===currentUser.id).length],["Очиқ вазифалар",openJobs.length]];
  $("homeMetrics").innerHTML=metrics.map(x=>'<div class="card"><div class="muted">'+x[0]+'</div><div class="metric">'+x[1]+'</div></div>').join("");
  $("flow").innerHTML=Object.keys(leadStatus).map(s=>'<div class="stage"><b>'+leadStatus[s]+'</b><div class="n">'+leads.filter(x=>x.status===s).length+'</div><div class="muted">та лид</div></div>').join("");
  const today=new Date().toDateString();
@@ -317,13 +363,15 @@ function render(){
  const byKind=k=>jobs.filter(j=>j.kind===k).sort((a,b)=>(a.status==="completed"||a.status==="cancelled")-(b.status==="completed"||b.status==="cancelled"));
  $("measureList").innerHTML=byKind("measurement").map(jobCard).join("")||'<div class="empty">Ўлчов вазифалари йўқ. Буюртмани очиб, «Ўлчов белгилаш» ни босинг.</div>';
  $("installList").innerHTML=byKind("installation").map(jobCard).join("")||'<div class="empty">Монтаж вазифалари йўқ.</div>';
+ renderStaff();
 }
 document.addEventListener("click",e=>{
- const t=e.target.closest("[data-lead],[data-order],[data-job]");
+ const t=e.target.closest("[data-lead],[data-order],[data-job],[data-staff]");
  if(!t||t.closest(".sheet"))return;
  if(t.dataset.lead)openLead(t.dataset.lead);
  else if(t.dataset.order)openOrder(t.dataset.order);
  else if(t.dataset.job)openJob(t.dataset.job);
+ else if(t.dataset.staff)openStaff(t.dataset.staff);
 });
 function openSheet(title,html){$("sheet").innerHTML='<div class="sheethead"><h3>'+esc(title)+'</h3><button class="close" onclick="closeSheet()" aria-label="Ёпиш">✕</button></div>'+html;$("sheetBg").classList.add("open");document.body.style.overflow="hidden"}
 function closeSheet(){$("sheetBg").classList.remove("open");document.body.style.overflow=""}
@@ -451,6 +499,7 @@ async function deletePay(id,orderId){
 }
 
 /* ---------- Вазифалар ---------- */
+function assignSelect(id,cur){if(!isManager()||!staff.length)return"";const o={"":"— Тайинланмаган —"};staff.filter(m=>!m.is_me).forEach(m=>o[m.user_id]=m.email+" ("+roleName[m.role]+")");return '<label>Масъул ходим</label><select id="'+id+'">'+opts(o,cur||"")+'</select>'}
 function showJobForm(orderId,kind){
  const o=orders.find(x=>x.id===orderId),c=customerMap.get(o.customer_id)||{};
  $("jobForm").innerHTML='<div class="card" style="margin-top:10px"><h3>'+jobKind[kind]+' белгилаш</h3>'+
@@ -458,7 +507,7 @@ function showJobForm(orderId,kind){
   '<label>Сана ва вақт</label><input id="jWhen" type="datetime-local">'+
   '<label>Манзил</label><input id="jAddr" value="'+esc(c.address)+'">'+
   '<label>Алоқа телефони</label><input id="jPhone" type="tel" value="'+esc(c.phone)+'">'+
-  '<label>Изоҳ</label><textarea id="jNotes"></textarea>'+
+  '<label>Изоҳ</label><textarea id="jNotes"></textarea>'+assignSelect("jAssign",null)+
   '<button class="btn primary" onclick="createJob(\''+esc(orderId)+'\',\''+kind+'\',this)">Вазифани сақлаш</button></div>';
  $("jobForm").scrollIntoView({behavior:"smooth"});
 }
@@ -466,7 +515,7 @@ async function createJob(orderId,kind,btn){
  const title=val("jTitle");if(!title)return alert("Вазифа номини киритинг.");
  const when=val("jWhen");
  const done=busy(btn,"Сақланмоқда…");
- const {error}=await sb.from("crm_jobs").insert({company_id:companyId,order_id:orderId,kind,title,scheduled_at:when?new Date(when).toISOString():null,address:val("jAddr")||null,contact_phone:val("jPhone")||null,notes:val("jNotes")||null,status:"scheduled",progress:0,created_by:currentUser.id});
+ const {error}=await sb.from("crm_jobs").insert({company_id:companyId,order_id:orderId,kind,title,scheduled_at:when?new Date(when).toISOString():null,address:val("jAddr")||null,contact_phone:val("jPhone")||null,notes:val("jNotes")||null,status:"scheduled",progress:0,created_by:currentUser.id,...($("jAssign")?{assigned_to:$("jAssign").value||null}:{})});
  if(error){done();return reportError("Вазифа яратишда хатолик",error)}
  const o=orders.find(x=>x.id===orderId);
  if(o&&["new","quotation","confirmed","production"].includes(o.status)){
@@ -481,7 +530,7 @@ function openJob(id){
  const phone=j.contact_phone||c.phone;
  openSheet(j.title,
   '<div class="meta">'+esc(jobKind[j.kind])+' • '+esc(o.reference_code||"")+'<br>'+esc(j.address||c.address||"Манзил йўқ")+(phone?'<br><a class="tel" href="tel:'+esc(phone.replace(/[^\d+]/g,""))+'">'+esc(phone)+'</a>':"")+(j.notes?'<br>'+esc(j.notes):"")+'</div>'+
-  '<label>Сана ва вақт</label><input id="jWhen2" type="datetime-local" value="'+toLocalInput(j.scheduled_at)+'">'+
+  '<label>Сана ва вақт</label><input id="jWhen2" type="datetime-local" value="'+toLocalInput(j.scheduled_at)+'"'+(canJob(j.kind,"edit")?"":" disabled")+'>'+assignSelect("jAssign2",j.assigned_to)+
   '<label>Ҳолати</label><select id="jStatus">'+opts(jobStatus,j.status)+'</select>'+
   '<label>Бажарилиши: <b id="jPv">'+(j.progress||0)+'</b>%</label><input id="jProg" type="range" min="0" max="100" step="10" value="'+(j.progress||0)+'" oninput="$(\'jPv\').textContent=this.value">'+
   (j.kind==="measurement"?'<div class="row"><div><label>Эни (см)</label><input id="jW" type="number" inputmode="decimal" min="0" value="'+esc(j.width_cm??"")+'"></div><div><label>Чиқиши (см)</label><input id="jP" type="number" inputmode="decimal" min="0" value="'+esc(j.projection_cm??"")+'"></div></div>':"")+
@@ -494,7 +543,9 @@ async function saveJob(id,btn){
  const status=$("jStatus").value;let progress=Number($("jProg").value);
  if(status==="completed")progress=100;
  const when=val("jWhen2");
- const patch={status,progress,result_notes:val("jResult")||null,scheduled_at:when?new Date(when).toISOString():null};
+ const patch={status,progress,result_notes:val("jResult")||null};
+ if(canJob(j.kind,"edit"))patch.scheduled_at=when?new Date(when).toISOString():null;
+ if($("jAssign2"))patch.assigned_to=$("jAssign2").value||null;
  if(j.kind==="measurement"){
   const w=numOrNull(val("jW")),p=numOrNull(val("jP"));
   if([w,p].some(x=>x!==null&&(isNaN(x)||x<0)))return alert("Ўлчам нотўғри.");
@@ -504,11 +555,62 @@ async function saveJob(id,btn){
  const {error}=await sb.from("crm_jobs").update(patch).eq("id",id).eq("company_id",companyId);
  done();
  if(error)return reportError("Вазифани сақлашда хатолик",error);
- if(j.kind==="installation"&&status==="completed"){
+ if(j.kind==="installation"&&status==="completed"&&canSell()){
   const o=orders.find(x=>x.id===j.order_id);
   if(o&&o.status!=="completed"&&confirm("Монтаж бажарилди. Буюртмани ҳам «Бажарилган» деб белгилайликми?"))
    await sb.from("crm_orders").update({status:"completed"}).eq("id",o.id).eq("company_id",companyId);
  }
+ await reload();closeSheet();
+}
+
+/* ---------- Ходимлар ---------- */
+async function addStaff(btn){
+ const email=val("sEmail"),password=$("sPass").value,role=$("sRole").value;
+ if(!email)return alert("Ходим email’ини киритинг.");
+ if(password.length<8)return alert("Парол камида 8 белгидан иборат бўлсин.");
+ const done=busy(btn,"Қўшилмоқда…");
+ const r=await callFn("crm-members",{action:"create",company_id:companyId,email,password,role});
+ done();
+ if(r.error)return alert(r.error);
+ $("sEmail").value="";$("sPass").value="";
+ await reload();
+ alert(r.data.existing?"Бу email аввал рўйхатдан ўтган экан. Ходим компанияга қўшилди, у эски пароли билан киради.":"Ходим қўшилди. Унга email ва паролни юборинг: "+email);
+}
+function permGrid(perms){
+ return ["measurement","installation"].map(k=>'<div class="sub2">'+jobKind[k]+'</div><div class="permgrid">'+Object.keys(permAct).map(a=>'<label><input type="checkbox" data-perm="'+k+"_"+a+'"'+(perms&&perms[k+"_"+a]?" checked":"")+'>'+permAct[a]+'</label>').join("")+'</div>').join("");
+}
+function openStaff(id){
+ const m=staff.find(x=>x.user_id===id);if(!m)return;
+ if(m.is_me)return alert("Бу сизнинг аккаунтингиз. Ўз ролингизни ўзгартириб бўлмайди.");
+ openSheet(m.email,
+  '<label>Лавозими</label><select id="stRole" onchange="document.querySelectorAll(\'[data-perm]\').forEach(c=>c.checked=!!rolePreset(this.value)[c.dataset.perm])">'+opts(roleName,m.role)+'</select>'+
+  '<div class="meta" style="margin-top:6px">Лавозим танланганда рухсатлар ўзи белгиланади, кейин хоҳлаганингизча ўзгартиришингиз мумкин.</div>'+
+  permGrid(m.permissions||rolePreset(m.role))+
+  '<button class="btn primary" onclick="saveStaff(\''+esc(id)+'\',this)">Сақлаш</button>'+
+  '<div class="sub2">Паролни алмаштириш</div><input id="stPass" type="text" autocomplete="off" placeholder="Янги парол (камида 8 белги)">'+
+  '<button class="btn soft" onclick="staffPass(\''+esc(id)+'\',this)">Паролни ўрнатиш</button>'+
+  '<button class="btn red" onclick="removeStaff(\''+esc(id)+'\',this)">Ходимни компаниядан чиқариш</button>');
+}
+async function saveStaff(id,btn){
+ const permissions={};document.querySelectorAll("[data-perm]").forEach(c=>permissions[c.dataset.perm]=c.checked);
+ const done=busy(btn,"Сақланмоқда…");
+ const r=await callFn("crm-members",{action:"update",company_id:companyId,user_id:id,role:$("stRole").value,permissions});
+ done();if(r.error)return alert(r.error);
+ await reload();closeSheet();
+}
+async function staffPass(id,btn){
+ const password=$("stPass").value;if(password.length<8)return alert("Парол камида 8 белгидан иборат бўлсин.");
+ const done=busy(btn,"Ўрнатилмоқда…");
+ const r=await callFn("crm-members",{action:"set_password",company_id:companyId,user_id:id,password});
+ done();if(r.error)return alert(r.error);
+ $("stPass").value="";alert("Янги парол ўрнатилди. Уни ходимга юборинг.");
+}
+async function removeStaff(id,btn){
+ const m=staff.find(x=>x.user_id===id);
+ if(!confirm((m?.email||"Ходим")+" компаниядан чиқарилсинми? У энди CRM маълумотларини кўра олмайди."))return;
+ const done=busy(btn,"Чиқарилмоқда…");
+ const r=await callFn("crm-members",{action:"remove",company_id:companyId,user_id:id});
+ done();if(r.error)return alert(r.error);
  await reload();closeSheet();
 }
 
