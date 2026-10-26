@@ -169,8 +169,8 @@ input[type=range]{padding:0}
 </section>
 
 <section id="more" class="page">
- <div class="card role"><h3>VAYQEN CRM</h3><div class="meta">Лидлар, буюртмалар, ўлчов ва монтаж вазифалари, AI жавоб ёрдамчиси.</div></div>
- <div class="card role" style="margin-top:10px"><h3>Кейинги босқичлар</h3><div class="meta">Ходимлар ва рухсатлар, тўловлар.</div></div>
+ <div class="card role"><h3>VAYQEN CRM</h3><div class="meta">Лидлар, буюртмалар, тўловлар, ўлчов ва монтаж вазифалари, AI жавоб ёрдамчиси.</div></div>
+ <div class="card role" style="margin-top:10px"><h3>Кейинги босқичлар</h3><div class="meta">Ходимлар ва рухсатлар.</div></div>
  <div class="sectionTitle">Маълумот нусхаси</div><div class="card"><button class="btn soft" onclick="exportData()">CRM маълумотларини экспорт қилиш</button></div>
 </section>
 </main>
@@ -192,12 +192,17 @@ input[type=range]{padding:0}
 const SUPABASE_URL="https://cjhktphfgneamwnhsykq.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_lgjLjQ4mmDRJfDBJdoJF_Q_hoSfnNUn";
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-let companyId=null,companies=[],customers=[],leads=[],orders=[],jobs=[],currentUser=null,customerMap=new Map(),lastAiReply="";
+let companyId=null,companies=[],customers=[],leads=[],orders=[],jobs=[],payments=[],currentUser=null,customerMap=new Map(),lastAiReply="";
 const leadStatus={new:"Янги",contacted:"Алоқа қилинган",qualified:"Сараланган",proposal:"Таклиф берилган",won:"Сотув бўлган",lost:"Йўқотилган"};
 const orderStatus={new:"Янги",measurement:"Ўлчов",quotation:"Нарх таклифи",confirmed:"Тасдиқланган",production:"Ишлаб чиқариш",installation:"Монтаж",completed:"Бажарилган",cancelled:"Бекор қилинган"};
 const jobStatus={scheduled:"Режада",in_progress:"Жараёнда",completed:"Бажарилди",cancelled:"Бекор қилинди"};
 const jobKind={measurement:"Ўлчов",installation:"Монтаж"};
 const curLabel={UZS:"сўм",USD:"$",EUR:"€"};
+const payKind={prepayment:"Бўнак",payment:"Тўлов",refund:"Қайтариш"};
+const payMethod={cash:"Нақд",card:"Карта",transfer:"Ўтказма",click:"Click",payme:"Payme"};
+const todayISO=()=>{const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)};
+function paidFor(o){return payments.filter(p=>p.order_id===o.id).reduce((a,p)=>a+(p.kind==="refund"?-1:1)*Number(p.amount),0)}
+function debtFor(o){return o.amount==null||o.status==="cancelled"?0:Math.max(0,Number(o.amount)-paidFor(o))}
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const $=id=>document.getElementById(id);
 const val=id=>$(id).value.trim();
@@ -247,14 +252,15 @@ async function boot(){
 
 /* ---------- Маълумот ---------- */
 async function loadData(){
- const [c,l,o,j]=await Promise.all([
+ const [c,l,o,j,p]=await Promise.all([
   sb.from("crm_customers").select("id,name,phone,address,notes,created_at").eq("company_id",companyId).order("created_at",{ascending:false}),
   sb.from("crm_leads").select("id,customer_id,title,source,notes,status,estimated_amount,created_at").eq("company_id",companyId).order("created_at",{ascending:false}),
   sb.from("crm_orders").select("id,customer_id,lead_id,reference_code,title,description,status,amount,currency,created_at").eq("company_id",companyId).order("created_at",{ascending:false}),
-  sb.from("crm_jobs").select("id,order_id,kind,title,scheduled_at,due_date,address,contact_phone,width_cm,projection_cm,notes,result_notes,progress,status,created_at").eq("company_id",companyId).order("scheduled_at",{ascending:true,nullsFirst:false})
+  sb.from("crm_jobs").select("id,order_id,kind,title,scheduled_at,due_date,address,contact_phone,width_cm,projection_cm,notes,result_notes,progress,status,created_at").eq("company_id",companyId).order("scheduled_at",{ascending:true,nullsFirst:false}),
+  sb.from("crm_payments").select("id,order_id,kind,method,amount,currency,paid_at,note,created_at").eq("company_id",companyId).order("paid_at",{ascending:false})
  ]);
- for(const r of [c,l,o,j])if(r.error)throw r.error;
- customers=c.data||[];leads=l.data||[];orders=o.data||[];jobs=j.data||[];
+ for(const r of [c,l,o,j,p])if(r.error)throw r.error;
+ customers=c.data||[];leads=l.data||[];orders=o.data||[];jobs=j.data||[];payments=p.data||[];
  customerMap=new Map(customers.map(x=>[x.id,x]));
  updateCompanyLabel();render();
 }
@@ -284,7 +290,7 @@ function leadCard(l){
 function orderCard(o){
  const c=customerMap.get(o.customer_id)||{};
  const js=jobs.filter(j=>j.order_id===o.id&&j.status!=="cancelled");
- return '<div class="item" data-order="'+esc(o.id)+'"><div class="itemtop"><h4>'+esc(o.reference_code||"Буюртма")+' • '+esc(c.name||o.title)+'</h4><span class="pill">'+esc(orderStatus[o.status]||o.status)+'</span></div><div class="meta">'+esc(o.title)+'<br>'+esc(c.phone||"")+' • '+fmtDate(o.created_at)+(js.length?'<br>Вазифалар: '+js.map(j=>jobKind[j.kind]+" ("+jobStatus[j.status]+")").join(", "):"")+'</div>'+(o.amount!=null?'<div class="money">'+money(o.amount,o.currency)+'</div>':"")+'</div>';
+ return '<div class="item" data-order="'+esc(o.id)+'"><div class="itemtop"><h4>'+esc(o.reference_code||"Буюртма")+' • '+esc(c.name||o.title)+'</h4><span class="pill">'+esc(orderStatus[o.status]||o.status)+'</span></div><div class="meta">'+esc(o.title)+'<br>'+esc(c.phone||"")+' • '+fmtDate(o.created_at)+(js.length?'<br>Вазифалар: '+js.map(j=>jobKind[j.kind]+" ("+jobStatus[j.status]+")").join(", "):"")+'</div>'+(o.amount!=null?'<div class="money">'+money(o.amount,o.currency)+(debtFor(o)>0?' <small>қолдиқ '+money(debtFor(o),o.currency)+'</small>':(o.status!=="cancelled"?' <small>тўлиқ тўланган ✓</small>':""))+'</div>':"")+'</div>';
 }
 function jobCard(j){
  const o=orders.find(x=>x.id===j.order_id)||{},c=customerMap.get(o.customer_id)||{};
@@ -299,11 +305,13 @@ function render(){
  const today=new Date().toDateString();
  const todays=openJobs.filter(j=>j.scheduled_at&&new Date(j.scheduled_at).toDateString()===today);
  $("todayList").innerHTML=todays.map(jobCard).join("")||'<div class="empty">Бугунга режалаштирилган ўлчов ёки монтаж йўқ. Вазифани буюртма ичидан белгиланг.</div>';
- const sums={},done={};
- orders.filter(o=>o.status!=="cancelled"&&o.amount!=null).forEach(o=>{sums[o.currency]=(sums[o.currency]||0)+Number(o.amount);if(o.status==="completed")done[o.currency]=(done[o.currency]||0)+Number(o.amount)});
+ const month=todayISO().slice(0,7),inMonth={},debt={},debtors=[];
+ payments.filter(p=>String(p.paid_at).slice(0,7)===month).forEach(p=>{inMonth[p.currency]=(inMonth[p.currency]||0)+(p.kind==="refund"?-1:1)*Number(p.amount)});
+ orders.forEach(o=>{const d=debtFor(o);if(d>0){debt[o.currency]=(debt[o.currency]||0)+d;debtors.push(o)}});
  const pipe=leads.filter(l=>!["won","lost"].includes(l.status)).reduce((a,l)=>a+(Number(l.estimated_amount)||0),0);
- const rows=Object.keys(sums).map(k=>'<div class="kpirow"><span>Буюртмалар суммаси</span><b>'+money(sums[k],k)+'</b></div><div class="kpirow"><span>Шундан бажарилган</span><b>'+money(done[k]||0,k)+'</b></div>').join("");
- $("moneyBrief").innerHTML=(rows||'<div class="kpirow"><span>Буюртмалар суммаси</span><b>'+money(0)+'</b></div>')+'<div class="kpirow"><span>Очиқ лидлар (тахминан)</span><b>'+money(pipe)+'</b></div><div class="meta">Тўловлар жадвали кейинги босқичда қўшилади.</div>';
+ const rowsOf=(label,obj)=>Object.keys(obj).length?Object.keys(obj).map(k=>'<div class="kpirow"><span>'+label+'</span><b>'+money(obj[k],k)+'</b></div>').join(""):'<div class="kpirow"><span>'+label+'</span><b>'+money(0)+'</b></div>';
+ $("moneyBrief").innerHTML=rowsOf("Шу ой тушум",inMonth)+rowsOf("Мижозлар қарзи",debt)+'<div class="kpirow"><span>Очиқ лидлар (тахминан)</span><b>'+money(pipe)+'</b></div>'+
+  (debtors.length?'<div class="sub2">Қарздорлар</div>'+debtors.slice(0,5).map(o=>{const c=customerMap.get(o.customer_id)||{};return '<div class="kpirow" data-order="'+esc(o.id)+'" style="cursor:pointer"><span>'+esc(c.name||o.title)+' • '+esc(o.reference_code||"")+'</span><b>'+money(debtFor(o),o.currency)+'</b></div>'}).join(""):"");
  $("leadList").innerHTML=leads.map(leadCard).join("")||'<div class="empty">Ҳали лид йўқ. Юқоридаги шакл орқали биринчи мижозни қўшинг.</div>';
  $("orderList").innerHTML=orders.map(orderCard).join("")||'<div class="empty">Ҳали буюртма йўқ. Лидни очиб, «Буюртма яратиш» тугмасини босинг.</div>';
  const byKind=k=>jobs.filter(j=>j.kind===k).sort((a,b)=>(a.status==="completed"||a.status==="cancelled")-(b.status==="completed"||b.status==="cancelled"));
@@ -392,6 +400,8 @@ function openOrder(id){
   '<div class="row"><div><label>Сумма</label><input id="oAmount2" type="number" inputmode="numeric" min="0" value="'+esc(o.amount??"")+'"></div><div><label>Валюта</label><select id="oCur2">'+opts({UZS:"сўм",USD:"USD",EUR:"EUR"},o.currency)+'</select></div></div>'+
   '<label>Тавсиф</label><textarea id="oDesc2">'+esc(o.description)+'</textarea>'+
   '<button class="btn primary" onclick="saveOrder(\''+esc(id)+'\',this)">Сақлаш</button>'+
+  '<div class="sub2">Тўловлар</div>'+payBlock(o)+
+  '<button class="btn soft" onclick="showPayForm(\''+esc(id)+'\',this)">+ Тўлов қўшиш</button><div id="payForm"></div>'+
   '<div class="sub2">Ўлчов ва монтаж</div>'+
   (js.map(jobCard).join("").replaceAll('data-job=','onclick="openJob(this.dataset.job)" data-job=')||'<div class="empty">Бу буюртмага ҳали вазифа белгиланмаган.</div>')+
   '<div class="row"><button class="btn soft" onclick="showJobForm(\''+esc(id)+'\',\'measurement\')">+ Ўлчов</button><button class="btn soft" onclick="showJobForm(\''+esc(id)+'\',\'installation\')">+ Монтаж</button></div><div id="jobForm"></div>'
@@ -405,6 +415,39 @@ async function saveOrder(id,btn){
  done();
  if(error)return reportError("Буюртмани сақлашда хатолик",error);
  await reload();closeSheet();
+}
+
+/* ---------- Тўловлар ---------- */
+function payBlock(o){
+ const ps=payments.filter(p=>p.order_id===o.id),paid=paidFor(o);
+ const head=o.amount!=null?'<div class="kpirow"><span>Тўланган</span><b>'+money(paid,o.currency)+' / '+money(o.amount,o.currency)+'</b></div><div class="kpirow"><span>Қолдиқ</span><b>'+money(debtFor(o),o.currency)+'</b></div>'+'<div class="progress"><span style="width:'+Math.min(100,o.amount>0?paid/o.amount*100:0)+'%"></span></div>':'<div class="meta">Буюртма суммаси киритилмаган, шунинг учун қолдиқ ҳисобланмайди.</div>';
+ return head+(ps.map(p=>'<div class="kpirow"><span>'+fmtDate(p.paid_at)+' • '+payKind[p.kind]+' • '+payMethod[p.method]+(p.note?'<br><small class="muted">'+esc(p.note)+'</small>':"")+'</span><b>'+(p.kind==="refund"?"−":"")+money(p.amount,p.currency)+' <button class="smallbtn" aria-label="Ўчириш" onclick="deletePay(\''+esc(p.id)+'\',\''+esc(o.id)+'\')">✕</button></b></div>').join("")||'<div class="empty">Ҳали тўлов киритилмаган.</div>');
+}
+function showPayForm(orderId,btn){
+ const o=orders.find(x=>x.id===orderId);btn.style.display="none";
+ const debt=debtFor(o);
+ $("payForm").innerHTML='<div class="card" style="margin-top:10px">'+
+  '<div class="row"><div><label>Тури</label><select id="pKind">'+opts(payKind,paidFor(o)>0?"payment":"prepayment")+'</select></div><div><label>Усули</label><select id="pMethod">'+opts(payMethod,"cash")+'</select></div></div>'+
+  '<div class="row"><div><label>Сумма ('+esc(curLabel[o.currency]||o.currency)+')</label><input id="pAmount" type="number" inputmode="numeric" min="0" value="'+(debt>0?debt:"")+'"></div><div><label>Сана</label><input id="pDate" type="date" value="'+todayISO()+'"></div></div>'+
+  '<label>Изоҳ</label><input id="pNote" placeholder="Масалан: чек рақами">'+
+  '<button class="btn primary" onclick="createPay(\''+esc(orderId)+'\',this)">Тўловни сақлаш</button></div>';
+ $("payForm").scrollIntoView({behavior:"smooth"});
+}
+async function createPay(orderId,btn){
+ const o=orders.find(x=>x.id===orderId);
+ const amount=Number(val("pAmount"));
+ if(!amount||amount<=0)return alert("Тўлов суммасини киритинг.");
+ const done=busy(btn,"Сақланмоқда…");
+ const {error}=await sb.from("crm_payments").insert({company_id:companyId,order_id:orderId,kind:$("pKind").value,method:$("pMethod").value,amount,currency:o.currency,paid_at:val("pDate")||todayISO(),note:val("pNote")||null,created_by:currentUser.id});
+ done();
+ if(error)return reportError("Тўловни сақлашда хатолик",error);
+ await reload();openOrder(orderId);
+}
+async function deletePay(id,orderId){
+ if(!confirm("Бу тўловни ўчирайликми?"))return;
+ const {error}=await sb.from("crm_payments").delete().eq("id",id).eq("company_id",companyId);
+ if(error)return reportError("Тўловни ўчиришда хатолик",error);
+ await reload();openOrder(orderId);
 }
 
 /* ---------- Вазифалар ---------- */
@@ -483,7 +526,7 @@ async function addLead(){
  }catch(e){reportError("Сақлашда хатолик",e)}
 }
 function exportData(){
- const blob=new Blob([JSON.stringify({companyId,customers,leads,orders,jobs},null,2)],{type:"application/json"});
+ const blob=new Blob([JSON.stringify({companyId,customers,leads,orders,jobs,payments},null,2)],{type:"application/json"});
  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="VAYQEN_CRM_backup_"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
