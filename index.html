@@ -4,7 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#0B5D45">
-<title>LESEL Mobile CRM</title>
+<title>VAYQEN CRM</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="VAYQEN">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <style>
 :root{
@@ -18,7 +25,7 @@ body{padding-bottom:82px}
 .top{
  position:sticky;top:0;z-index:10;
  background:linear-gradient(135deg,#17342c,#0b5d45);
- color:#fff;padding:14px 16px 12px;
+ color:#fff;padding:calc(14px + env(safe-area-inset-top)) 16px 12px;
  box-shadow:0 4px 18px #0002
 }
 .toprow{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -111,6 +118,7 @@ input[type=range]{padding:0}
 .empty{padding:12px;border-radius:14px;background:#fff;border:1px dashed var(--line);font-size:13px;color:var(--muted);margin:8px 0}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 main{padding-bottom:90px}
+@media(min-width:860px){.fab{right:calc(50% - 410px)}}
 .permgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;margin-top:6px}
 .permgrid label{display:flex;align-items:center;gap:8px;margin:4px 0;font-weight:700;color:var(--ink)}
 .permgrid input{width:20px;height:20px;padding:0;flex:none}
@@ -175,7 +183,7 @@ main{padding-bottom:90px}
 
 <section id="more" class="page">
  <div class="card role"><h3>VAYQEN CRM</h3><div class="meta">Лидлар, буюртмалар, тўловлар, ўлчов ва монтаж вазифалари, AI жавоб ёрдамчиси.</div></div>
- <div class="card role" style="margin-top:10px"><h3>Кейинги босқичлар</h3><div class="meta">Ходимлар ва рухсатлар.</div></div>
+ <div class="card role" style="margin-top:10px"><h3>Илова сифатида ўрнатиш</h3><div class="meta">Android: браузер менюси ⋮ → «Бош экранга қўшиш». iPhone: Safari’да «Улашиш» → «На экран Домой». Mac: Safari’да Файл → «Добавить в Dock».</div></div>
  <div id="staffWrap" class="hide"><div class="sectionTitle">Ходимлар</div>
   <div class="card"><h3>Янги ходим</h3>
    <label>Email</label><input id="sEmail" type="email" autocomplete="off" placeholder="xodim@gmail.com">
@@ -350,7 +358,7 @@ function render(){
  $("flow").innerHTML=Object.keys(leadStatus).map(s=>'<div class="stage"><b>'+leadStatus[s]+'</b><div class="n">'+leads.filter(x=>x.status===s).length+'</div><div class="muted">та лид</div></div>').join("");
  const today=new Date().toDateString();
  const todays=openJobs.filter(j=>j.scheduled_at&&new Date(j.scheduled_at).toDateString()===today);
- $("todayList").innerHTML=todays.map(jobCard).join("")||'<div class="empty">Бугунга режалаштирилган ўлчов ёки монтаж йўқ. Вазифани буюртма ичидан белгиланг.</div>';
+ $("todayList").innerHTML=todays.map(jobCard).join("")||'<div class="empty">Бугунга режалаштирилган ўлчов ёки монтаж йўқ.'+(canSell()?' Вазифани буюртма ичидан белгиланг.':'')+'</div>';
  const month=todayISO().slice(0,7),inMonth={},debt={},debtors=[];
  payments.filter(p=>String(p.paid_at).slice(0,7)===month).forEach(p=>{inMonth[p.currency]=(inMonth[p.currency]||0)+(p.kind==="refund"?-1:1)*Number(p.amount)});
  orders.forEach(o=>{const d=debtFor(o);if(d>0){debt[o.currency]=(debt[o.currency]||0)+d;debtors.push(o)}});
