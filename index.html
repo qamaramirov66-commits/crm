@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0B5D45">
+<title>LESEL Mobile CRM</title>
+
+<style>
+:root{
+ --bg:#f5f3ed; --card:#fff; --ink:#16312a; --muted:#66736e;
+ --green:#0b5d45; --green2:#148462; --gold:#c99a4a; --line:#e7e2d7;
+ --danger:#b33a3a; --soft:#edf5f1; --orange:#fff1df; --blue:#eaf2fa;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--ink)}
+body{padding-bottom:82px}
+.top{
+ position:sticky;top:0;z-index:10;
+ background:linear-gradient(135deg,#17342c,#0b5d45);
+ color:#fff;padding:14px 16px 12px;
+ box-shadow:0 4px 18px #0002
+}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.logo{font-size:22px;font-weight:900;letter-spacing:.5px}
+.sub{font-size:12px;opacity:.85;margin-top:3px}
+.chip{background:var(--gold);color:#1b2b26;font-weight:800;padding:7px 10px;border-radius:999px;font-size:12px}
+main{padding:12px;max-width:640px;margin:auto}
+.page{display:none}.page.active{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 5px 16px #17342c0b}
+.card h3{font-size:16px;margin:0 0 10px}
+.metric{font-size:24px;font-weight:900;color:var(--green)}
+.muted{font-size:12px;color:var(--muted)}
+.sectionTitle{font-size:17px;font-weight:900;margin:18px 2px 10px}
+.flow{display:flex;overflow-x:auto;gap:8px;padding-bottom:4px;scrollbar-width:none}
+.flow::-webkit-scrollbar{display:none}
+.stage{min-width:135px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px}
+.stage b{font-size:13px;display:block}.stage .n{font-size:22px;font-weight:900;color:var(--green);margin-top:6px}
+.alert{padding:12px;border-radius:14px;background:#fff6e8;border:1px solid #efdbb4;margin:8px 0;font-size:13px}
+.alert.ok{background:#edf8f1;border-color:#c8e7d2}
+.alert.bad{background:#fdeeee;border-color:#efbcbc}
+label{display:block;font-size:12px;color:var(--muted);font-weight:800;margin:10px 0 5px}
+input,select,textarea{
+ width:100%;padding:13px 12px;border-radius:12px;border:1px solid #cfd9d5;
+ background:#fff;font-size:16px;outline:none
+}
+textarea{min-height:90px;resize:vertical;font-family:inherit}
+select,input,button{font-family:inherit}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.btn{
+ width:100%;border:0;border-radius:14px;padding:13px 14px;margin-top:10px;
+ font-weight:900;font-size:15px
+}
+.btn.primary{background:var(--green);color:#fff}
+.btn.gold{background:var(--gold);color:#1b2b26}
+.btn.soft{background:#edf4f1;color:var(--ink)}
+.btn.red{background:#fdecec;color:var(--danger)}
+.item{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;margin:9px 0}
+.itemtop{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.item h4{margin:0;font-size:15px}
+.pill{font-size:11px;font-weight:900;padding:5px 8px;border-radius:999px;background:var(--soft);white-space:nowrap}
+.meta{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.5}
+.money{font-size:17px;font-weight:900;color:var(--green);margin-top:8px}
+.progress{height:8px;background:#edf0ed;border-radius:999px;overflow:hidden;margin-top:10px}
+.progress span{display:block;height:100%;background:var(--green)}
+.bottomnav{
+ position:fixed;bottom:0;left:0;right:0;z-index:20;
+ background:#fff;border-top:1px solid var(--line);display:grid;
+ grid-template-columns:repeat(5,1fr);padding:6px 4px max(6px,env(safe-area-inset-bottom))
+}
+.bottomnav button{
+ border:0;background:transparent;color:#66736e;font-size:10px;font-weight:800;
+ padding:6px 1px
+}
+.bottomnav button span{display:block;font-size:21px;line-height:22px;margin-bottom:2px}
+.bottomnav button.active{color:var(--green)}
+.fab{
+ position:fixed;right:16px;bottom:92px;width:56px;height:56px;border-radius:50%;
+ border:0;background:var(--gold);font-size:28px;font-weight:900;color:#1b2b26;
+ box-shadow:0 8px 22px #0003;z-index:15
+}
+.role{border-left:5px solid var(--green)}
+.smallbtn{border:0;border-radius:10px;padding:9px 10px;font-weight:800;background:#edf4f1;color:var(--ink)}
+.kpirow{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding:9px 0;font-size:13px}
+@media(min-width:700px){body{padding-bottom:20px}.bottomnav{left:50%;transform:translateX(-50%);max-width:640px;border:1px solid var(--line);border-radius:18px 18px 0 0}.fab{right:calc(50% - 300px)}}
+#appShell{display:none}
+.loginwrap{max-width:460px;margin:9vh auto;padding:18px}
+.login-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 8px 28px #17342c12}
+.login-card h1{margin:0 0 6px;color:var(--green)}
+.login-card p{color:var(--muted);font-size:14px;line-height:1.5}
+.logout{border:1px solid #ffffff66;background:#ffffff16;color:#fff;border-radius:10px;padding:8px 10px;font-weight:800}
+.top-right{display:flex;align-items:center;gap:8px}
+.item{cursor:pointer}
+.item:active{transform:scale(.99)}
+a.tel{color:var(--green);font-weight:800;text-decoration:none}
+.money small{font-size:12px;color:var(--muted);font-weight:700}
+.sheetbg{position:fixed;inset:0;background:#0007;z-index:40;display:none;align-items:flex-end;justify-content:center}
+.sheetbg.open{display:flex}
+.sheet{background:var(--bg);width:100%;max-width:640px;max-height:90vh;overflow-y:auto;border-radius:22px 22px 0 0;padding:16px 16px max(20px,env(safe-area-inset-bottom));animation:up .18s ease-out}
+@keyframes up{from{transform:translateY(30px);opacity:.6}to{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.sheet{animation:none}}
+.sheethead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.sheethead h3{margin:0;font-size:19px}
+.close{border:0;background:#e7e2d7;border-radius:50%;width:36px;height:36px;font-size:18px;font-weight:900;flex:none}
+.ai{background:var(--soft);border:1px solid #c8e7d2;border-radius:14px;padding:12px;margin-top:10px;font-size:14px;line-height:1.5;white-space:pre-wrap}
+.ai b{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.sub2{font-size:15px;font-weight:900;margin:18px 0 4px}
+input[type=range]{padding:0}
+.btn:disabled{opacity:.6}
+.empty{padding:12px;border-radius:14px;background:#fff;border:1px dashed var(--line);font-size:13px;color:var(--muted);margin:8px 0}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+</style>
+</head>
+<body>
+<div id="loginWrap" class="loginwrap">
+ <div class="login-card">
+  <h1>VAYQEN CRM</h1><p>LESEL BUSINESS иш жойига хавфсиз кириш</p>
+  <label>Email</label><input id="authEmail" type="email" autocomplete="username" placeholder="email@example.com">
+  <label>Парол</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Парол">
+  <div id="authMessage" class="alert" style="display:none"></div>
+  <button id="loginButton" class="btn primary" onclick="signIn()">Кириш</button>
+  <button class="btn soft" onclick="sendPasswordReset()">Паролни тиклаш ҳаволасини юбориш</button>
+ </div>
+</div>
+<div id="appShell">
+<div class="top">
+ <div class="toprow">
+  <div><div class="logo">VAYQEN</div><div id="companyLabel" class="sub">LESEL BUSINESS</div></div><div class="top-right"><div id="userLabel" class="chip">Аккаунт</div><button class="logout" onclick="signOut()">Чиқиш</button></div>
+ </div>
+</div>
+
+<main>
+<section id="home" class="page active">
+ <div class="grid2" id="homeMetrics"></div>
+ <div class="sectionTitle">Савдо жараёни</div>
+ <div class="flow" id="flow"></div>
+ <div class="sectionTitle">Бугунги ишлар</div>
+ <div id="todayList"></div>
+ <div class="sectionTitle">Молия</div>
+ <div class="card" id="moneyBrief"></div>
+</section>
+
+<section id="leads" class="page">
+ <div class="card">
+  <h3>Янги мижоз</h3>
+  <label>Мижоз / компания</label><input id="leadName" placeholder="Масалан: Grand Cafe">
+  <label>Телефон</label><input id="leadPhone" type="tel" placeholder="+998 ...">
+  <div class="row">
+   <div><label>Манба</label><select id="leadSource"><option>Instagram</option><option>Telegram</option><option>WhatsApp</option><option>Telefon</option><option>Tavsiya</option></select></div>
+   <div><label>Маҳсулот</label><select id="leadProduct"><option>Markiza</option><option>Zontik</option><option>Pergola</option><option>ZIP Screen</option></select></div>
+  </div>
+  <label>Ҳудуд / манзил</label><input id="leadCity" placeholder="Тошкент / Қарши">
+  <label>Изоҳ (AI ёрдамчи шундан фойдаланади)</label><textarea id="leadNotes" placeholder="Мижоз нима сўради, ўлчами, бюджети..."></textarea>
+  <button class="btn primary" onclick="addLead()">+ CRM’га сақлаш</button>
+ </div>
+ <div class="sectionTitle">Лидлар</div>
+ <div id="leadList"></div>
+</section>
+
+<section id="orders" class="page">
+ <div class="sectionTitle">Буюртмалар</div>
+ <div id="orderList"></div>
+</section>
+
+<section id="work" class="page">
+ <div class="sectionTitle">Ўлчов</div><div id="measureList"></div>
+ <div class="sectionTitle">Монтаж</div><div id="installList"></div>
+</section>
+
+<section id="more" class="page">
+ <div class="card role"><h3>VAYQEN CRM</h3><div class="meta">Лидлар, буюртмалар, ўлчов ва монтаж вазифалари, AI жавоб ёрдамчиси.</div></div>
+ <div class="card role" style="margin-top:10px"><h3>Кейинги босқичлар</h3><div class="meta">Ходимлар ва рухсатлар, тўловлар.</div></div>
+ <div class="sectionTitle">Маълумот нусхаси</div><div class="card"><button class="btn soft" onclick="exportData()">CRM маълумотларини экспорт қилиш</button></div>
+</section>
+</main>
+
+<button class="fab" onclick="go('leads')" aria-label="Янги лид">+</button>
+
+<div class="bottomnav">
+ <button class="active" data-page="home" onclick="go('home',this)"><span>⌂</span>Bosh sahifa</button>
+ <button data-page="leads" onclick="go('leads',this)"><span>◎</span>Lidlar</button>
+ <button data-page="orders" onclick="go('orders',this)"><span>▣</span>Buyurtma</button>
+ <button data-page="work" onclick="go('work',this)"><span>⚒</span>Ishlar</button>
+ <button data-page="more" onclick="go('more',this)"><span>⋯</span>Ko'proq</button>
+</div>
+</div>
+
+<div id="sheetBg" class="sheetbg" onclick="if(event.target===this)closeSheet()"><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3"></script>
+<script>
+const SUPABASE_URL="https://cjhktphfgneamwnhsykq.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_lgjLjQ4mmDRJfDBJdoJF_Q_hoSfnNUn";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+let companyId=null,companies=[],customers=[],leads=[],orders=[],jobs=[],currentUser=null,customerMap=new Map(),lastAiReply="";
+const leadStatus={new:"Янги",contacted:"Алоқа қилинган",qualified:"Сараланган",proposal:"Таклиф берилган",won:"Сотув бўлган",lost:"Йўқотилган"};
+const orderStatus={new:"Янги",measurement:"Ўлчов",quotation:"Нарх таклифи",confirmed:"Тасдиқланган",production:"Ишлаб чиқариш",installation:"Монтаж",completed:"Бажарилган",cancelled:"Бекор қилинган"};
+const jobStatus={scheduled:"Режада",in_progress:"Жараёнда",completed:"Бажарилди",cancelled:"Бекор қилинди"};
+const jobKind={measurement:"Ўлчов",installation:"Монтаж"};
+const curLabel={UZS:"сўм",USD:"$",EUR:"€"};
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $=id=>document.getElementById(id);
+const val=id=>$(id).value.trim();
+const opts=(map,sel)=>Object.entries(map).map(([k,v])=>'<option value="'+k+'"'+(k===sel?" selected":"")+'>'+v+'</option>').join("");
+const numOrNull=v=>v===""?null:Number(v);
+function money(n,cur="UZS"){return new Intl.NumberFormat("uz-UZ").format(Math.round(Number(n)||0))+" "+(curLabel[cur]||cur)}
+function fmtDate(d){return d?new Date(d).toLocaleDateString("uz-UZ"):""}
+function fmtDT(d){return d?new Date(d).toLocaleString("uz-UZ",{dateStyle:"short",timeStyle:"short"}):"Вақт белгиланмаган"}
+function toLocalInput(d){if(!d)return"";const t=new Date(d);t.setMinutes(t.getMinutes()-t.getTimezoneOffset());return t.toISOString().slice(0,16)}
+function authMessage(text,bad=false){const m=$("authMessage");m.textContent=text;m.className="alert"+(bad?" bad":" ok");m.style.display="block"}
+function reportError(label,error){console.error(label,error);alert(label+": "+(error?.message||"номаълум хатолик"))}
+
+/* ---------- Кириш ---------- */
+async function signIn(){
+ const email=val("authEmail"),password=$("authPassword").value,b=$("loginButton");
+ if(!email||!password)return authMessage("Email ва паролни киритинг.",true);
+ b.disabled=true;b.textContent="Текширилмоқда…";
+ const {error}=await sb.auth.signInWithPassword({email,password});
+ b.disabled=false;b.textContent="Кириш";
+ if(error)return authMessage("Кириш амалга ошмади. Email ва паролни текширинг ёки тиклаш ҳаволасини сўранг.",true);
+ await boot();
+}
+async function sendPasswordReset(){
+ const email=val("authEmail");
+ if(!email)return authMessage("Аввал email манзилингизни киритинг.",true);
+ const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.href.split("#")[0]});
+ authMessage(error?"Тиклаш хатини юбориб бўлмади.":"Агар бу email рўйхатда бўлса, тиклаш ҳаволаси юборилди.",!!error);
+}
+async function signOut(){
+ await sb.auth.signOut();companyId=null;companies=[];customers=[];leads=[];orders=[];jobs=[];currentUser=null;
+ $("appShell").style.display="none";$("loginWrap").style.display="block";
+}
+async function boot(){
+ const {data:{session}}=await sb.auth.getSession();
+ if(!session){$("loginWrap").style.display="block";$("appShell").style.display="none";return}
+ currentUser=session.user;$("loginWrap").style.display="none";$("appShell").style.display="block";
+ $("userLabel").textContent=currentUser.email||"Кирган фойдаланувчи";
+ try{
+  const {data,error}=await sb.from("companies").select("id,name").order("id");
+  if(error)throw error;
+  companies=data||[];
+  if(!companies.length)throw new Error("Бу аккаунтга очиқ компания топилмади. Аккаунт рухсатини текшириш керак.");
+  if(!companyId||!companies.some(c=>Number(c.id)===Number(companyId)))companyId=Number(companies[0].id);
+  await loadData();
+ }catch(e){$("companyLabel").textContent="Маълумот очилмади";reportError("CRM маълумотларини юклашда хатолик",e)}
+}
+
+/* ---------- Маълумот ---------- */
+async function loadData(){
+ const [c,l,o,j]=await Promise.all([
+  sb.from("crm_customers").select("id,name,phone,address,notes,created_at").eq("company_id",companyId).order("created_at",{ascending:false}),
+  sb.from("crm_leads").select("id,customer_id,title,source,notes,status,estimated_amount,created_at").eq("company_id",companyId).order("created_at",{ascending:false}),
+  sb.from("crm_orders").select("id,customer_id,lead_id,reference_code,title,description,status,amount,currency,created_at").eq("company_id",companyId).order("created_at",{ascending:false}),
+  sb.from("crm_jobs").select("id,order_id,kind,title,scheduled_at,due_date,address,contact_phone,width_cm,projection_cm,notes,result_notes,progress,status,created_at").eq("company_id",companyId).order("scheduled_at",{ascending:true,nullsFirst:false})
+ ]);
+ for(const r of [c,l,o,j])if(r.error)throw r.error;
+ customers=c.data||[];leads=l.data||[];orders=o.data||[];jobs=j.data||[];
+ customerMap=new Map(customers.map(x=>[x.id,x]));
+ updateCompanyLabel();render();
+}
+async function reload(){try{await loadData()}catch(e){reportError("Маълумотни янгилашда хатолик",e)}}
+function updateCompanyLabel(){
+ const el=$("companyLabel");
+ if(companies.length>1){
+  const select=document.createElement("select");select.setAttribute("aria-label","Компанияни танланг");
+  companies.forEach(c=>{const o=document.createElement("option");o.value=String(c.id);o.textContent=c.name;if(Number(c.id)===Number(companyId))o.selected=true;select.appendChild(o)});
+  select.onchange=()=>switchCompany(select.value);el.replaceChildren(select);
+ }else el.textContent=companies[0]?.name||"Компания";
+}
+async function switchCompany(id){companyId=Number(id);await reload()}
+function go(id,btn){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ $(id).classList.add("active");
+ document.querySelectorAll(".bottomnav button").forEach(b=>b.classList.remove("active"));
+ (btn||document.querySelector('.bottomnav button[data-page="'+id+'"]'))?.classList.add("active");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ---------- Кўриниш ---------- */
+function leadCard(l){
+ const c=customerMap.get(l.customer_id)||{};
+ return '<div class="item" data-lead="'+esc(l.id)+'"><div class="itemtop"><h4>'+esc(c.name||l.title)+'</h4><span class="pill">'+esc(leadStatus[l.status]||l.status)+'</span></div><div class="meta">'+esc(c.phone||"Телефон киритилмаган")+'<br>'+esc(l.source||"Манба йўқ")+' • '+esc(l.title)+(c.address?" • "+esc(c.address):"")+'<br>'+fmtDate(l.created_at)+'</div>'+(l.estimated_amount!=null?'<div class="money">'+money(l.estimated_amount)+' <small>тахминан</small></div>':"")+'</div>';
+}
+function orderCard(o){
+ const c=customerMap.get(o.customer_id)||{};
+ const js=jobs.filter(j=>j.order_id===o.id&&j.status!=="cancelled");
+ return '<div class="item" data-order="'+esc(o.id)+'"><div class="itemtop"><h4>'+esc(o.reference_code||"Буюртма")+' • '+esc(c.name||o.title)+'</h4><span class="pill">'+esc(orderStatus[o.status]||o.status)+'</span></div><div class="meta">'+esc(o.title)+'<br>'+esc(c.phone||"")+' • '+fmtDate(o.created_at)+(js.length?'<br>Вазифалар: '+js.map(j=>jobKind[j.kind]+" ("+jobStatus[j.status]+")").join(", "):"")+'</div>'+(o.amount!=null?'<div class="money">'+money(o.amount,o.currency)+'</div>':"")+'</div>';
+}
+function jobCard(j){
+ const o=orders.find(x=>x.id===j.order_id)||{},c=customerMap.get(o.customer_id)||{};
+ return '<div class="item" data-job="'+esc(j.id)+'"><div class="itemtop"><h4>'+esc(j.title)+'</h4><span class="pill">'+esc(jobStatus[j.status]||j.status)+'</span></div><div class="meta">'+esc(fmtDT(j.scheduled_at))+'<br>'+esc(j.address||c.address||"Манзил йўқ")+' • '+esc(j.contact_phone||c.phone||"")+'</div><div class="progress"><span style="width:'+(Number(j.progress)||0)+'%"></span></div></div>';
+}
+function render(){
+ const activeOrders=orders.filter(o=>!["completed","cancelled"].includes(o.status));
+ const openJobs=jobs.filter(j=>["scheduled","in_progress"].includes(j.status));
+ const metrics=[["Мижозлар",customers.length],["Янги лидлар",leads.filter(x=>x.status==="new").length],["Фаол буюртмалар",activeOrders.length],["Очиқ вазифалар",openJobs.length]];
+ $("homeMetrics").innerHTML=metrics.map(x=>'<div class="card"><div class="muted">'+x[0]+'</div><div class="metric">'+x[1]+'</div></div>').join("");
+ $("flow").innerHTML=Object.keys(leadStatus).map(s=>'<div class="stage"><b>'+leadStatus[s]+'</b><div class="n">'+leads.filter(x=>x.status===s).length+'</div><div class="muted">та лид</div></div>').join("");
+ const today=new Date().toDateString();
+ const todays=openJobs.filter(j=>j.scheduled_at&&new Date(j.scheduled_at).toDateString()===today);
+ $("todayList").innerHTML=todays.map(jobCard).join("")||'<div class="empty">Бугунга режалаштирилган ўлчов ёки монтаж йўқ. Вазифани буюртма ичидан белгиланг.</div>';
+ const sums={},done={};
+ orders.filter(o=>o.status!=="cancelled"&&o.amount!=null).forEach(o=>{sums[o.currency]=(sums[o.currency]||0)+Number(o.amount);if(o.status==="completed")done[o.currency]=(done[o.currency]||0)+Number(o.amount)});
+ const pipe=leads.filter(l=>!["won","lost"].includes(l.status)).reduce((a,l)=>a+(Number(l.estimated_amount)||0),0);
+ const rows=Object.keys(sums).map(k=>'<div class="kpirow"><span>Буюртмалар суммаси</span><b>'+money(sums[k],k)+'</b></div><div class="kpirow"><span>Шундан бажарилган</span><b>'+money(done[k]||0,k)+'</b></div>').join("");
+ $("moneyBrief").innerHTML=(rows||'<div class="kpirow"><span>Буюртмалар суммаси</span><b>'+money(0)+'</b></div>')+'<div class="kpirow"><span>Очиқ лидлар (тахминан)</span><b>'+money(pipe)+'</b></div><div class="meta">Тўловлар жадвали кейинги босқичда қўшилади.</div>';
+ $("leadList").innerHTML=leads.map(leadCard).join("")||'<div class="empty">Ҳали лид йўқ. Юқоридаги шакл орқали биринчи мижозни қўшинг.</div>';
+ $("orderList").innerHTML=orders.map(orderCard).join("")||'<div class="empty">Ҳали буюртма йўқ. Лидни очиб, «Буюртма яратиш» тугмасини босинг.</div>';
+ const byKind=k=>jobs.filter(j=>j.kind===k).sort((a,b)=>(a.status==="completed"||a.status==="cancelled")-(b.status==="completed"||b.status==="cancelled"));
+ $("measureList").innerHTML=byKind("measurement").map(jobCard).join("")||'<div class="empty">Ўлчов вазифалари йўқ. Буюртмани очиб, «Ўлчов белгилаш» ни босинг.</div>';
+ $("installList").innerHTML=byKind("installation").map(jobCard).join("")||'<div class="empty">Монтаж вазифалари йўқ.</div>';
+}
+document.addEventListener("click",e=>{
+ const t=e.target.closest("[data-lead],[data-order],[data-job]");
+ if(!t||t.closest(".sheet"))return;
+ if(t.dataset.lead)openLead(t.dataset.lead);
+ else if(t.dataset.order)openOrder(t.dataset.order);
+ else if(t.dataset.job)openJob(t.dataset.job);
+});
+function openSheet(title,html){$("sheet").innerHTML='<div class="sheethead"><h3>'+esc(title)+'</h3><button class="close" onclick="closeSheet()" aria-label="Ёпиш">✕</button></div>'+html;$("sheetBg").classList.add("open");document.body.style.overflow="hidden"}
+function closeSheet(){$("sheetBg").classList.remove("open");document.body.style.overflow=""}
+function busy(btn,text){const old=btn.textContent;btn.disabled=true;btn.textContent=text;return()=>{btn.disabled=false;btn.textContent=old}}
+
+/* ---------- Лид ---------- */
+function openLead(id){
+ const l=leads.find(x=>x.id===id);if(!l)return;
+ const c=customerMap.get(l.customer_id)||{};
+ const linked=orders.filter(o=>o.lead_id===id);
+ openSheet(c.name||l.title,
+  '<div class="meta">'+(c.phone?'<a class="tel" href="tel:'+esc(c.phone.replace(/[^\d+]/g,""))+'">'+esc(c.phone)+'</a><br>':"")+esc(l.source||"")+' • '+esc(l.title)+(c.address?" • "+esc(c.address):"")+'<br>'+fmtDate(l.created_at)+'</div>'+
+  '<label>Ҳолати</label><select id="lStatus">'+opts(leadStatus,l.status)+'</select>'+
+  '<label>Тахминий сумма (сўм)</label><input id="lAmount" type="number" inputmode="numeric" min="0" value="'+esc(l.estimated_amount??"")+'">'+
+  '<label>Изоҳ</label><textarea id="lNotes">'+esc(l.notes)+'</textarea>'+
+  '<button class="btn primary" onclick="saveLead(\''+esc(id)+'\',this)">Сақлаш</button>'+
+  '<div class="sub2">AI ёрдамчи</div><div class="meta">Мижоз исми ва телефони AI’га юборилмайди. Хабар автоматик юборилмайди.</div>'+
+  '<button class="btn gold" onclick="aiLead(\''+esc(id)+'\',this)">Жавоб таклифини олиш</button><div id="aiOut"></div>'+
+  '<div class="sub2">Буюртма</div>'+
+  (linked.length?linked.map(orderCard).join("").replaceAll('data-order=','onclick="openOrder(this.dataset.order)" data-order='):"")+
+  '<button class="btn soft" onclick="showOrderForm(\''+esc(id)+'\',this)">'+(linked.length?"Яна буюртма яратиш":"Буюртма яратиш")+'</button><div id="orderForm"></div>'
+ );
+}
+async function saveLead(id,btn){
+ const done=busy(btn,"Сақланмоқда…");
+ const amount=numOrNull(val("lAmount"));
+ if(amount!==null&&(isNaN(amount)||amount<0)){done();return alert("Сумма нотўғри.")}
+ const {error}=await sb.from("crm_leads").update({status:$("lStatus").value,estimated_amount:amount,notes:val("lNotes")||null}).eq("id",id).eq("company_id",companyId);
+ done();
+ if(error)return reportError("Лидни сақлашда хатолик",error);
+ await reload();closeSheet();
+}
+async function aiLead(id,btn){
+ const done=busy(btn,"AI ўйламоқда…");const out=$("aiOut");out.innerHTML="";
+ const {data,error}=await sb.functions.invoke("ai-lead-assistant",{body:{lead_id:id}});
+ done();
+ if(error){let msg=error.message;try{const b=await error.context.json();if(b?.error)msg=b.error}catch{}
+  out.innerHTML='<div class="alert bad">'+esc(msg)+'</div>';return}
+ lastAiReply=data.reply_suggestion||"";
+ out.innerHTML='<div class="ai"><b>Жавоб таклифи</b>'+esc(lastAiReply)+'</div><button class="btn soft" onclick="copyAi(this)">Матнни нусхалаш</button><div class="ai"><b>Кейинги қадам</b>'+esc(data.next_step)+'</div>';
+}
+async function copyAi(btn){try{await navigator.clipboard.writeText(lastAiReply);btn.textContent="Нусхаланди ✓"}catch{btn.textContent="Нусхалаб бўлмади, матнни қўлда белгиланг"}}
+
+/* ---------- Буюртма ---------- */
+function showOrderForm(leadId,btn){
+ const l=leads.find(x=>x.id===leadId),c=customerMap.get(l.customer_id)||{};
+ btn.style.display="none";
+ $("orderForm").innerHTML='<div class="card" style="margin-top:10px">'+
+  '<label>Буюртма номи</label><input id="oTitle" value="'+esc(l.title+(c.name?" — "+c.name:""))+'">'+
+  '<div class="row"><div><label>Сумма</label><input id="oAmount" type="number" inputmode="numeric" min="0" value="'+esc(l.estimated_amount??"")+'"></div><div><label>Валюта</label><select id="oCur">'+opts({UZS:"сўм",USD:"USD",EUR:"EUR"},"UZS")+'</select></div></div>'+
+  '<label>Тавсиф</label><textarea id="oDesc" placeholder="Ўлчам, ранг, материал...">'+esc(l.notes)+'</textarea>'+
+  '<button class="btn primary" onclick="createOrder(\''+esc(leadId)+'\',this)">Буюртмани сақлаш</button></div>';
+}
+function newRef(){const d=new Date();return"LS-"+String(d.getFullYear()).slice(2)+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+Math.floor(100+Math.random()*900)}
+async function createOrder(leadId,btn){
+ const l=leads.find(x=>x.id===leadId);
+ const title=val("oTitle"),amount=numOrNull(val("oAmount"));
+ if(!title)return alert("Буюртма номини киритинг.");
+ if(amount!==null&&(isNaN(amount)||amount<0))return alert("Сумма нотўғри.");
+ if(!l.customer_id)return alert("Бу лидга мижоз боғланмаган.");
+ const done=busy(btn,"Сақланмоқда…");
+ const {error}=await sb.from("crm_orders").insert({company_id:companyId,customer_id:l.customer_id,lead_id:leadId,reference_code:newRef(),title,description:val("oDesc")||null,amount,currency:$("oCur").value,status:"new",created_by:currentUser.id});
+ if(error){done();return reportError("Буюртма яратишда хатолик",error)}
+ if(l.status!=="won")await sb.from("crm_leads").update({status:"won"}).eq("id",leadId).eq("company_id",companyId);
+ done();await reload();closeSheet();go("orders");
+}
+function openOrder(id){
+ const o=orders.find(x=>x.id===id);if(!o)return;
+ const c=customerMap.get(o.customer_id)||{};
+ const js=jobs.filter(j=>j.order_id===id);
+ openSheet((o.reference_code||"Буюртма")+" • "+(c.name||""),
+  '<div class="meta">'+esc(o.title)+'<br>'+(c.phone?'<a class="tel" href="tel:'+esc(c.phone.replace(/[^\d+]/g,""))+'">'+esc(c.phone)+'</a> • ':"")+esc(c.address||"")+'</div>'+
+  '<label>Ҳолати</label><select id="oStatus">'+opts(orderStatus,o.status)+'</select>'+
+  '<div class="row"><div><label>Сумма</label><input id="oAmount2" type="number" inputmode="numeric" min="0" value="'+esc(o.amount??"")+'"></div><div><label>Валюта</label><select id="oCur2">'+opts({UZS:"сўм",USD:"USD",EUR:"EUR"},o.currency)+'</select></div></div>'+
+  '<label>Тавсиф</label><textarea id="oDesc2">'+esc(o.description)+'</textarea>'+
+  '<button class="btn primary" onclick="saveOrder(\''+esc(id)+'\',this)">Сақлаш</button>'+
+  '<div class="sub2">Ўлчов ва монтаж</div>'+
+  (js.map(jobCard).join("").replaceAll('data-job=','onclick="openJob(this.dataset.job)" data-job=')||'<div class="empty">Бу буюртмага ҳали вазифа белгиланмаган.</div>')+
+  '<div class="row"><button class="btn soft" onclick="showJobForm(\''+esc(id)+'\',\'measurement\')">+ Ўлчов</button><button class="btn soft" onclick="showJobForm(\''+esc(id)+'\',\'installation\')">+ Монтаж</button></div><div id="jobForm"></div>'
+ );
+}
+async function saveOrder(id,btn){
+ const amount=numOrNull(val("oAmount2"));
+ if(amount!==null&&(isNaN(amount)||amount<0))return alert("Сумма нотўғри.");
+ const done=busy(btn,"Сақланмоқда…");
+ const {error}=await sb.from("crm_orders").update({status:$("oStatus").value,amount,currency:$("oCur2").value,description:val("oDesc2")||null}).eq("id",id).eq("company_id",companyId);
+ done();
+ if(error)return reportError("Буюртмани сақлашда хатолик",error);
+ await reload();closeSheet();
+}
+
+/* ---------- Вазифалар ---------- */
+function showJobForm(orderId,kind){
+ const o=orders.find(x=>x.id===orderId),c=customerMap.get(o.customer_id)||{};
+ $("jobForm").innerHTML='<div class="card" style="margin-top:10px"><h3>'+jobKind[kind]+' белгилаш</h3>'+
+  '<label>Номи</label><input id="jTitle" value="'+esc(jobKind[kind]+": "+o.title)+'">'+
+  '<label>Сана ва вақт</label><input id="jWhen" type="datetime-local">'+
+  '<label>Манзил</label><input id="jAddr" value="'+esc(c.address)+'">'+
+  '<label>Алоқа телефони</label><input id="jPhone" type="tel" value="'+esc(c.phone)+'">'+
+  '<label>Изоҳ</label><textarea id="jNotes"></textarea>'+
+  '<button class="btn primary" onclick="createJob(\''+esc(orderId)+'\',\''+kind+'\',this)">Вазифани сақлаш</button></div>';
+ $("jobForm").scrollIntoView({behavior:"smooth"});
+}
+async function createJob(orderId,kind,btn){
+ const title=val("jTitle");if(!title)return alert("Вазифа номини киритинг.");
+ const when=val("jWhen");
+ const done=busy(btn,"Сақланмоқда…");
+ const {error}=await sb.from("crm_jobs").insert({company_id:companyId,order_id:orderId,kind,title,scheduled_at:when?new Date(when).toISOString():null,address:val("jAddr")||null,contact_phone:val("jPhone")||null,notes:val("jNotes")||null,status:"scheduled",progress:0,created_by:currentUser.id});
+ if(error){done();return reportError("Вазифа яратишда хатолик",error)}
+ const o=orders.find(x=>x.id===orderId);
+ if(o&&["new","quotation","confirmed","production"].includes(o.status)){
+  const next=kind==="measurement"?(o.status==="new"?"measurement":null):"installation";
+  if(next)await sb.from("crm_orders").update({status:next}).eq("id",orderId).eq("company_id",companyId);
+ }
+ done();await reload();openOrder(orderId);
+}
+function openJob(id){
+ const j=jobs.find(x=>x.id===id);if(!j)return;
+ const o=orders.find(x=>x.id===j.order_id)||{},c=customerMap.get(o.customer_id)||{};
+ const phone=j.contact_phone||c.phone;
+ openSheet(j.title,
+  '<div class="meta">'+esc(jobKind[j.kind])+' • '+esc(o.reference_code||"")+'<br>'+esc(j.address||c.address||"Манзил йўқ")+(phone?'<br><a class="tel" href="tel:'+esc(phone.replace(/[^\d+]/g,""))+'">'+esc(phone)+'</a>':"")+(j.notes?'<br>'+esc(j.notes):"")+'</div>'+
+  '<label>Сана ва вақт</label><input id="jWhen2" type="datetime-local" value="'+toLocalInput(j.scheduled_at)+'">'+
+  '<label>Ҳолати</label><select id="jStatus">'+opts(jobStatus,j.status)+'</select>'+
+  '<label>Бажарилиши: <b id="jPv">'+(j.progress||0)+'</b>%</label><input id="jProg" type="range" min="0" max="100" step="10" value="'+(j.progress||0)+'" oninput="$(\'jPv\').textContent=this.value">'+
+  (j.kind==="measurement"?'<div class="row"><div><label>Эни (см)</label><input id="jW" type="number" inputmode="decimal" min="0" value="'+esc(j.width_cm??"")+'"></div><div><label>Чиқиши (см)</label><input id="jP" type="number" inputmode="decimal" min="0" value="'+esc(j.projection_cm??"")+'"></div></div>':"")+
+  '<label>Натижа / изоҳ</label><textarea id="jResult" placeholder="Нима қилинди, нима қолди...">'+esc(j.result_notes)+'</textarea>'+
+  '<button class="btn primary" onclick="saveJob(\''+esc(id)+'\',this)">Сақлаш</button>'
+ );
+}
+async function saveJob(id,btn){
+ const j=jobs.find(x=>x.id===id);
+ const status=$("jStatus").value;let progress=Number($("jProg").value);
+ if(status==="completed")progress=100;
+ const when=val("jWhen2");
+ const patch={status,progress,result_notes:val("jResult")||null,scheduled_at:when?new Date(when).toISOString():null};
+ if(j.kind==="measurement"){
+  const w=numOrNull(val("jW")),p=numOrNull(val("jP"));
+  if([w,p].some(x=>x!==null&&(isNaN(x)||x<0)))return alert("Ўлчам нотўғри.");
+  patch.width_cm=w;patch.projection_cm=p;
+ }
+ const done=busy(btn,"Сақланмоқда…");
+ const {error}=await sb.from("crm_jobs").update(patch).eq("id",id).eq("company_id",companyId);
+ done();
+ if(error)return reportError("Вазифани сақлашда хатолик",error);
+ if(j.kind==="installation"&&status==="completed"){
+  const o=orders.find(x=>x.id===j.order_id);
+  if(o&&o.status!=="completed"&&confirm("Монтаж бажарилди. Буюртмани ҳам «Бажарилган» деб белгилайликми?"))
+   await sb.from("crm_orders").update({status:"completed"}).eq("id",o.id).eq("company_id",companyId);
+ }
+ await reload();closeSheet();
+}
+
+/* ---------- Янги лид ---------- */
+async function addLead(){
+ const name=val("leadName"),phone=val("leadPhone"),address=val("leadCity"),notes=val("leadNotes"),product=$("leadProduct").value,source=$("leadSource").value;
+ if(!name)return alert("Мижоз номини киритинг.");
+ try{
+  const {data:customer,error:ce}=await sb.from("crm_customers").insert({company_id:companyId,name,phone:phone||null,address:address||null,created_by:currentUser.id}).select("id").single();
+  if(ce)throw ce;
+  const {error:le}=await sb.from("crm_leads").insert({company_id:companyId,customer_id:customer.id,title:product,source,notes:notes||null,status:"new",created_by:currentUser.id});
+  if(le){await sb.from("crm_customers").delete().eq("id",customer.id).eq("company_id",companyId);throw le}
+  ["leadName","leadPhone","leadCity","leadNotes"].forEach(i=>$(i).value="");
+  await loadData();alert("Мижоз ва лид CRM базасига сақланди.");
+ }catch(e){reportError("Сақлашда хатолик",e)}
+}
+function exportData(){
+ const blob=new Blob([JSON.stringify({companyId,customers,leads,orders,jobs},null,2)],{type:"application/json"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="VAYQEN_CRM_backup_"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
+$("authPassword").addEventListener("keydown",e=>{if(e.key==="Enter")signIn()});
+sb.auth.onAuthStateChange((_event,session)=>{if(session&&!currentUser){currentUser=session.user;setTimeout(boot,0)}});
+boot();
+</script>
+</body>
+</html>
