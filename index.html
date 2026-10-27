@@ -119,6 +119,16 @@ input[type=range]{padding:0}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 main{padding-bottom:90px}
 @media(min-width:860px){.fab{right:calc(50% - 410px)}}
+.jfab{position:fixed;left:18px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:21;width:58px;height:58px;border-radius:50%;border:0;background:linear-gradient(135deg,#17342c,#0b5d45);color:#c89b4f;font-size:26px;box-shadow:0 8px 22px #0004}
+@media(min-width:700px){.jfab{left:calc(50% - 300px)}}
+@media(min-width:860px){.jfab{left:calc(50% - 410px)}}
+.mic{display:block;margin:14px auto 6px;width:96px;height:96px;border-radius:50%;border:0;font-size:40px;background:linear-gradient(135deg,#17342c,#0b5d45);color:#c89b4f;box-shadow:0 8px 24px #0003}
+.mic.rec{background:#b3261e;color:#fff;animation:pulse 1.2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 #b3261e88}100%{box-shadow:0 0 0 22px #b3261e00}}
+@media(prefers-reduced-motion:reduce){.mic.rec{animation:none}}
+.jstatus{text-align:center;color:var(--muted);font-size:13px;min-height:18px}
+.jsay{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:10px;font-size:14px}
+.jsay b{display:block;font-size:12px;color:var(--muted)}
 .permgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;margin-top:6px}
 .permgrid label{display:flex;align-items:center;gap:8px;margin:4px 0;font-weight:700;color:var(--ink)}
 .permgrid input{width:20px;height:20px;padding:0;flex:none}
@@ -198,6 +208,7 @@ main{padding-bottom:90px}
 </section>
 </main>
 
+<button class="jfab" id="jfab" onclick="openJarvis()" aria-label="Jarvis овозли ёрдамчи">🎙</button>
 <button class="fab" id="fab" onclick="go('leads')" aria-label="Янги лид">+</button>
 
 <div class="bottomnav">
@@ -622,15 +633,150 @@ async function removeStaff(id,btn){
  await reload();closeSheet();
 }
 
+/* ---------- Jarvis ---------- */
+let jRec=null,jChunks=[],jTimer=null,jAction=null;
+const jMuted=()=>{try{return localStorage.getItem("jarvisMute")==="1"}catch{return false}};
+function jAllowed(){const a=["query"];if(canSell())a.push("create_lead","update_lead_status");if(canSell()||canFinance())a.push("add_payment");if(canJob("measurement","create")||canJob("installation","create"))a.push("create_job");return a}
+function openJarvis(){
+ openSheet("Jarvis 🎙",
+  '<div class="meta">Гапиринг, масалан: «Янги лид: Гранд кафе, телефон 90 123 45 67, маркиза, Инстаграмдан», «Гранд кафедан 2 миллион бўнак олдим», «Бугун қандай ишлар бор?»</div>'+
+  '<button class="mic" id="jMic" onclick="jToggle()" aria-label="Ёзишни бошлаш">🎙</button><div class="jstatus" id="jStatus">Босинг ва гапиринг</div>'+
+  '<div class="row" style="margin-top:8px"><input id="jText" placeholder="Ёки ёзинг…" onkeydown="if(event.key===\'Enter\')jSendText()"><button class="btn soft" style="margin-top:0" onclick="jSendText()">Юбориш</button></div>'+
+  '<label style="display:flex;align-items:center;gap:8px;margin-top:8px"><input type="checkbox" style="width:20px;height:20px" id="jMute"'+(jMuted()?" checked":"")+' onchange="try{localStorage.setItem(\'jarvisMute\',this.checked?\'1\':\'0\')}catch{}">Овозли жавобни ўчириш</label>'+
+  '<div id="jOut"></div>');
+}
+function jSetStatus(t){const e=$("jStatus");if(e)e.textContent=t}
+async function jToggle(){
+ if(jRec&&jRec.state==="recording"){jRec.stop();return}
+ if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){jSetStatus("Бу браузерда микрофон ишламайди. Матн билан ёзинг.");return}
+ let stream;
+ try{stream=await navigator.mediaDevices.getUserMedia({audio:true})}catch{jSetStatus("Микрофонга рухсат берилмади. Браузер созламаларидан рухсат беринг.");return}
+ const mime=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg"].find(t=>MediaRecorder.isTypeSupported?.(t))||"";
+ jChunks=[];jRec=new MediaRecorder(stream,mime?{mimeType:mime}:undefined);
+ jRec.ondataavailable=e=>{if(e.data.size)jChunks.push(e.data)};
+ jRec.onstop=async()=>{
+  clearTimeout(jTimer);stream.getTracks().forEach(t=>t.stop());
+  const m=$("jMic");if(m){m.classList.remove("rec");m.textContent="🎙"}
+  const blob=new Blob(jChunks,{type:jRec.mimeType||mime||"audio/webm"});
+  if(blob.size<1500){jSetStatus("Овоз жуда қисқа. Қайта уриниб кўринг.");return}
+  const b64=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(String(fr.result).split(",")[1]);fr.readAsDataURL(blob)});
+  jAsk({audio_base64:b64,mime:blob.type});
+ };
+ jRec.start();const m=$("jMic");m.classList.add("rec");m.textContent="■";jSetStatus("Эшитяпман… тугатгач яна босинг");
+ jTimer=setTimeout(()=>{if(jRec?.state==="recording")jRec.stop()},45000);
+}
+function jSendText(){const t=val("jText");if(!t)return;$("jText").value="";jAsk({text:t})}
+function jNow(){const d=new Date();return d.toLocaleDateString("ru-RU",{weekday:"long"})+", "+toLocalInput(d.toISOString())}
+async function jAsk(payload){
+ jSetStatus("Ўйлаяпман…");$("jOut").innerHTML="";
+ const r=await callFn("jarvis",{...payload,allowed:jAllowed(),now:jNow()});
+ if(r.error){jSetStatus("");$("jOut").innerHTML='<div class="alert bad">'+esc(r.error)+'</div>';return}
+ jSetStatus("Яна гапириш учун микрофонни босинг");
+ const {transcript,reply,action}=r.data;jAction=action||{type:"none"};
+ let html='<div class="jsay"><b>Сиз</b>'+esc(transcript)+'</div>';
+ let say=reply;
+ if(jAction.type==="query"){say=jQuery(jAction.query);html+='<div class="ai"><b>Jarvis</b>'+esc(say)+'</div>'}
+ else{html+='<div class="ai"><b>Jarvis</b>'+esc(reply)+'</div>'+jForm(jAction)}
+ $("jOut").innerHTML=html;jSpeak(say);
+}
+function jSpeak(t){
+ if(jMuted()||!window.speechSynthesis||!t)return;
+ try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);const v=speechSynthesis.getVoices().find(v=>/^ru/i.test(v.lang));if(v){u.voice=v;u.lang=v.lang}else u.lang="ru-RU";speechSynthesis.speak(u)}catch{}
+}
+const cyr={"а":"a","б":"b","в":"v","г":"g","д":"d","е":"e","ё":"yo","ж":"j","з":"z","и":"i","й":"y","к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s","т":"t","у":"u","ф":"f","х":"x","ц":"ts","ч":"ch","ш":"sh","щ":"sh","ъ":"","ы":"i","ь":"","э":"e","ю":"yu","я":"ya","ў":"o","қ":"q","ғ":"g","ҳ":"h"};
+function jNorm(t){return String(t||"").toLowerCase().split("").map(c=>cyr[c]??c).join("").replace(/['`ʼ‘’]/g,"").replace(/[^a-z0-9]/g,"")}
+function jMatch(list,getName,q){
+ const nq=jNorm(q);if(!nq)return null;let best=null,score=0;
+ for(const it of list){const n=jNorm(getName(it));if(!n)continue;let sc=0;
+  if(n===nq)sc=100;else if(n.includes(nq)||nq.includes(n))sc=60;else{let k=0;while(k<Math.min(n.length,nq.length)&&n[k]===nq[k])k++;sc=k>=4?k*5:0}
+  if(sc>score){score=sc;best=it}}
+ return best;
+}
+const custName=x=>(customerMap.get(x.customer_id)||{}).name||x.title;
+function jOrderPick(a){
+ let o=a.order_ref?orders.find(x=>(x.reference_code||"").toLowerCase()===String(a.order_ref).toLowerCase()):null;
+ if(!o&&a.customer_name){const withDebt=orders.filter(x=>debtFor(x)>0);o=jMatch(withDebt,custName,a.customer_name)||jMatch(orders,custName,a.customer_name)}
+ return o;
+}
+function jOrderSelect(cur){const o={"":"— Буюртмани танланг —"};orders.filter(x=>x.status!=="cancelled").forEach(x=>o[x.id]=(x.reference_code||"")+" • "+custName(x)+(x.amount!=null?" • қолдиқ "+money(debtFor(x),x.currency):""));return '<select id="jfOrder">'+opts(o,cur||"")+'</select>'}
+function jForm(a){
+ const btn='<button class="btn primary" onclick="jExec(this)">✓ Бажариш</button><button class="btn soft" onclick="$(\'jOut\').innerHTML=\'\'">Бекор қилиш</button>';
+ if(a.type==="create_lead")return '<div class="card" style="margin-top:10px"><h3>Янги лид</h3>'+
+  '<label>Мижоз / компания</label><input id="jfName" value="'+esc(a.name)+'">'+
+  '<label>Телефон</label><input id="jfPhone" type="tel" value="'+esc(a.phone)+'">'+
+  '<div class="row"><div><label>Манба</label><select id="jfSource">'+opts({Instagram:"Instagram",Telegram:"Telegram",WhatsApp:"WhatsApp",Telefon:"Telefon",Tavsiya:"Tavsiya"},a.source||"Telefon")+'</select></div><div><label>Маҳсулот</label><select id="jfProduct">'+opts({Markiza:"Markiza",Zontik:"Zontik",Pergola:"Pergola","ZIP Screen":"ZIP Screen"},a.product||"Markiza")+'</select></div></div>'+
+  '<label>Манзил</label><input id="jfAddr" value="'+esc(a.address)+'">'+
+  '<label>Тахминий сумма (сўм)</label><input id="jfAmount" type="number" inputmode="numeric" value="'+esc(a.estimated_amount??"")+'">'+
+  '<label>Изоҳ</label><textarea id="jfNotes">'+esc(a.notes)+'</textarea>'+btn+'</div>';
+ if(a.type==="update_lead_status"){const l=jMatch(leads,custName,a.customer_name);const lo={"":"— Лидни танланг —"};leads.forEach(x=>lo[x.id]=custName(x)+" • "+x.title+" • "+leadStatus[x.status]);
+  return '<div class="card" style="margin-top:10px"><h3>Лид ҳолатини ўзгартириш</h3><label>Лид</label><select id="jfLead">'+opts(lo,l?.id||"")+'</select><label>Янги ҳолат</label><select id="jfStatus">'+opts(leadStatus,a.status||"contacted")+'</select>'+btn+'</div>'}
+ if(a.type==="add_payment"){const o=jOrderPick(a);
+  return '<div class="card" style="margin-top:10px"><h3>Тўлов киритиш</h3><label>Буюртма</label>'+jOrderSelect(o?.id)+
+  '<div class="row"><div><label>Тури</label><select id="jfKind">'+opts(payKind,a.kind||"payment")+'</select></div><div><label>Усули</label><select id="jfMethod">'+opts(payMethod,a.method||"cash")+'</select></div></div>'+
+  '<label>Сумма</label><input id="jfAmount" type="number" inputmode="numeric" value="'+esc(a.amount??"")+'">'+btn+'</div>'}
+ if(a.type==="create_job"){const o=jOrderPick(a);const asg=a.assignee&&staff.length?jMatch(staff.filter(m=>!m.is_me),m=>m.email,a.assignee):null;
+  return '<div class="card" style="margin-top:10px"><h3>Вазифа белгилаш</h3><label>Буюртма</label>'+jOrderSelect(o?.id)+
+  '<label>Тури</label><select id="jfKind">'+opts(jobKind,a.kind||"measurement")+'</select>'+
+  '<label>Сана ва вақт</label><input id="jfWhen" type="datetime-local" value="'+esc(String(a.when||"").slice(0,16))+'">'+
+  assignSelect("jfAssign",asg?.user_id)+'<label>Изоҳ</label><textarea id="jfNotes">'+esc(a.notes)+'</textarea>'+btn+'</div>'}
+ return "";
+}
+async function jExec(btn){
+ const a=jAction;const done=busy(btn,"Бажарилмоқда…");let msg="",err=null;
+ try{
+  if(a.type==="create_lead"){
+   const name=val("jfName");if(!name)throw new Error("Мижоз номини киритинг.");
+   const amt=numOrNull(val("jfAmount"));
+   await createLeadRecord({name,phone:val("jfPhone"),address:val("jfAddr"),source:$("jfSource").value,product:$("jfProduct").value,notes:val("jfNotes"),estimated_amount:isNaN(amt)?null:amt});
+   msg="Лид сақланди: "+name;
+  }else if(a.type==="update_lead_status"){
+   const id=$("jfLead").value;if(!id)throw new Error("Лидни танланг.");
+   const {error}=await sb.from("crm_leads").update({status:$("jfStatus").value}).eq("id",id).eq("company_id",companyId);if(error)throw error;
+   msg="Лид ҳолати ўзгартирилди: "+leadStatus[$("jfStatus").value];
+  }else if(a.type==="add_payment"){
+   const o=orders.find(x=>x.id===$("jfOrder").value);if(!o)throw new Error("Буюртмани танланг.");
+   const amount=Number(val("jfAmount"));if(!amount||amount<=0)throw new Error("Суммани киритинг.");
+   const {error}=await sb.from("crm_payments").insert({company_id:companyId,order_id:o.id,kind:$("jfKind").value,method:$("jfMethod").value,amount,currency:o.currency,paid_at:todayISO(),created_by:currentUser.id});if(error)throw error;
+   msg="Тўлов сақланди: "+money(amount,o.currency);
+  }else if(a.type==="create_job"){
+   const o=orders.find(x=>x.id===$("jfOrder").value);if(!o)throw new Error("Буюртмани танланг.");
+   const kind=$("jfKind").value,when=val("jfWhen"),c=customerMap.get(o.customer_id)||{};
+   const row={company_id:companyId,order_id:o.id,kind,title:jobKind[kind]+": "+o.title,scheduled_at:when?new Date(when).toISOString():null,address:c.address||null,contact_phone:c.phone||null,notes:val("jfNotes")||null,status:"scheduled",progress:0,created_by:currentUser.id};
+   if($("jfAssign"))row.assigned_to=$("jfAssign").value||null;
+   const {error}=await sb.from("crm_jobs").insert(row);if(error)throw error;
+   msg=jobKind[kind]+" вазифаси белгиланди"+(when?": "+fmtDT(new Date(when).toISOString()):"");
+  }
+ }catch(e){err=e}
+ done();
+ if(err){$("jOut").insertAdjacentHTML("beforeend",'<div class="alert bad">'+esc(err.message||"Хатолик")+'</div>');return}
+ await reload();$("jOut").innerHTML='<div class="alert ok">✓ '+esc(msg)+'</div>';jSpeak(msg);
+}
+function jQuery(q){
+ const open=jobs.filter(j=>["scheduled","in_progress"].includes(j.status));
+ const today=new Date().toDateString();
+ const line=j=>j.title+" — "+fmtDT(j.scheduled_at)+(j.assigned_to?" ("+(j.assigned_to===currentUser.id?"сиз":staffName(j.assigned_to)||"ходим")+")":"");
+ if(q==="today_jobs"){const t=open.filter(j=>j.scheduled_at&&new Date(j.scheduled_at).toDateString()===today);return t.length?"Бугун "+t.length+" та иш бор: "+t.map(line).join("; ")+".":"Бугунга режалаштирилган ўлчов ёки монтаж йўқ."}
+ if(q==="my_jobs"){const t=open.filter(j=>j.assigned_to===currentUser.id);return t.length?"Сизда "+t.length+" та очиқ вазифа бор: "+t.map(line).join("; ")+".":"Сизга тайинланган очиқ вазифа йўқ."}
+ if(q==="debts"){if(!(canSell()||canFinance()))return "Бу маълумотни кўришга рухсатингиз йўқ.";const d=orders.filter(o=>debtFor(o)>0);if(!d.length)return "Ҳозир қарздор мижоз йўқ.";const by={};d.forEach(o=>by[o.currency]=(by[o.currency]||0)+debtFor(o));return "Мижозлар қарзи: "+Object.keys(by).map(k=>money(by[k],k)).join(", ")+". Қарздорлар: "+d.slice(0,5).map(o=>custName(o)+" — "+money(debtFor(o),o.currency)).join("; ")+"."}
+ if(q==="new_leads"){if(!canSell())return "Бу маълумотни кўришга рухсатингиз йўқ.";const n=leads.filter(l=>l.status==="new");return n.length?n.length+" та янги лид бор: "+n.slice(0,6).map(custName).join(", ")+".":"Янги лид йўқ."}
+ if(q==="month_income"){if(!(canSell()||canFinance()))return "Бу маълумотни кўришга рухсатингиз йўқ.";const m=todayISO().slice(0,7),by={};payments.filter(p=>String(p.paid_at).slice(0,7)===m).forEach(p=>by[p.currency]=(by[p.currency]||0)+(p.kind==="refund"?-1:1)*Number(p.amount));const k=Object.keys(by);return k.length?"Шу ой тушум: "+k.map(c=>money(by[c],c)).join(", ")+".":"Шу ой ҳали тўлов тушмаган."}
+ if(!(canSell()||canFinance()))return "Сизда "+open.filter(j=>j.assigned_to===currentUser.id).length+" та очиқ вазифа бор.";
+ const debt=orders.reduce((s,o)=>s+(o.currency==="UZS"?debtFor(o):0),0);
+ return "Мижозлар: "+customers.length+", янги лидлар: "+leads.filter(l=>l.status==="new").length+", фаол буюртмалар: "+orders.filter(o=>!["completed","cancelled"].includes(o.status)).length+", очиқ вазифалар: "+open.length+", қарз: "+money(debt)+".";
+}
+
 /* ---------- Янги лид ---------- */
+async function createLeadRecord({name,phone,address,source,product,notes,estimated_amount}){
+ const {data:customer,error:ce}=await sb.from("crm_customers").insert({company_id:companyId,name,phone:phone||null,address:address||null,created_by:currentUser.id}).select("id").single();
+ if(ce)throw ce;
+ const {error:le}=await sb.from("crm_leads").insert({company_id:companyId,customer_id:customer.id,title:product||"Markiza",source:source||"Telefon",notes:notes||null,status:"new",estimated_amount:estimated_amount??null,created_by:currentUser.id});
+ if(le){await sb.from("crm_customers").delete().eq("id",customer.id).eq("company_id",companyId);throw le}
+}
 async function addLead(){
- const name=val("leadName"),phone=val("leadPhone"),address=val("leadCity"),notes=val("leadNotes"),product=$("leadProduct").value,source=$("leadSource").value;
+ const name=val("leadName");
  if(!name)return alert("Мижоз номини киритинг.");
  try{
-  const {data:customer,error:ce}=await sb.from("crm_customers").insert({company_id:companyId,name,phone:phone||null,address:address||null,created_by:currentUser.id}).select("id").single();
-  if(ce)throw ce;
-  const {error:le}=await sb.from("crm_leads").insert({company_id:companyId,customer_id:customer.id,title:product,source,notes:notes||null,status:"new",created_by:currentUser.id});
-  if(le){await sb.from("crm_customers").delete().eq("id",customer.id).eq("company_id",companyId);throw le}
+  await createLeadRecord({name,phone:val("leadPhone"),address:val("leadCity"),source:$("leadSource").value,product:$("leadProduct").value,notes:val("leadNotes")});
   ["leadName","leadPhone","leadCity","leadNotes"].forEach(i=>$(i).value="");
   await loadData();alert("Мижоз ва лид CRM базасига сақланди.");
  }catch(e){reportError("Сақлашда хатолик",e)}
