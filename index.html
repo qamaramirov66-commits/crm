@@ -647,6 +647,7 @@ function openJarvis(){
 }
 function jSetStatus(t){const e=$("jStatus");if(e)e.textContent=t}
 async function jToggle(){
+ jUnlockAudio();
  if(jRec&&jRec.state==="recording"){jRec.stop();return}
  if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){jSetStatus("Бу браузерда микрофон ишламайди. Матн билан ёзинг.");return}
  let stream;
@@ -665,7 +666,7 @@ async function jToggle(){
  jRec.start();const m=$("jMic");m.classList.add("rec");m.textContent="■";jSetStatus("Эшитяпман… тугатгач яна босинг");
  jTimer=setTimeout(()=>{if(jRec?.state==="recording")jRec.stop()},45000);
 }
-function jSendText(){const t=val("jText");if(!t)return;$("jText").value="";jAsk({text:t})}
+function jSendText(){jUnlockAudio();const t=val("jText");if(!t)return;$("jText").value="";jAsk({text:t})}
 function jNow(){const d=new Date();return d.toLocaleDateString("ru-RU",{weekday:"long"})+", "+toLocalInput(d.toISOString())}
 async function jAsk(payload){
  jSetStatus("Ўйлаяпман…");$("jOut").innerHTML="";
@@ -679,8 +680,19 @@ async function jAsk(payload){
  else{html+='<div class="ai"><b>Jarvis</b>'+esc(reply)+'</div>'+jForm(jAction)}
  $("jOut").innerHTML=html;jSpeak(say);
 }
-function jSpeak(t){
- if(jMuted()||!window.speechSynthesis||!t)return;
+let jAudio=null,jSrc=null;
+let jCtx=null;
+function jUnlockAudio(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;if(!jCtx)jCtx=new C();if(jCtx.state==="suspended")jCtx.resume();const b=jCtx.createBuffer(1,1,22050),s=jCtx.createBufferSource();s.buffer=b;s.connect(jCtx.destination);s.start(0)}catch{}}
+const lat={"а":"a","б":"b","в":"v","г":"g","д":"d","е":"e","ё":"yo","ж":"j","з":"z","и":"i","й":"y","к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s","т":"t","у":"u","ф":"f","х":"x","ц":"ts","ч":"ch","ш":"sh","щ":"sh","ъ":"ʼ","ы":"i","ь":"","э":"e","ю":"yu","я":"ya","ў":"oʻ","қ":"q","ғ":"gʻ","ҳ":"h"};
+function toLatinUz(t){return String(t).replace(/(^|[\s«"(])е/g,"$1ye").replace(/(^|[\s«"(])Е/g,"$1Ye").split("").map(c=>{const l=lat[c.toLowerCase()];if(l===undefined)return c;return c!==c.toLowerCase()?l.charAt(0).toUpperCase()+l.slice(1):l}).join("")}
+async function jSpeak(t){
+ if(jMuted()||!t)return;
+ const r=await callFn("jarvis",{tts:toLatinUz(t)});
+ if(r.data?.audio_base64){
+  try{if(jCtx){const bin=atob(r.data.audio_base64),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
+   const buf=await jCtx.decodeAudioData(u8.buffer);if(jSrc)try{jSrc.stop()}catch{};jSrc=jCtx.createBufferSource();jSrc.buffer=buf;jSrc.connect(jCtx.destination);jSrc.start(0);return}}catch{}
+  try{if(!jAudio)jAudio=new Audio();jAudio.src="data:audio/mpeg;base64,"+r.data.audio_base64;await jAudio.play();return}catch{}}
+ if(!window.speechSynthesis)return;
  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);const v=speechSynthesis.getVoices().find(v=>/^ru/i.test(v.lang));if(v){u.voice=v;u.lang=v.lang}else u.lang="ru-RU";speechSynthesis.speak(u)}catch{}
 }
 const cyr={"а":"a","б":"b","в":"v","г":"g","д":"d","е":"e","ё":"yo","ж":"j","з":"z","и":"i","й":"y","к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s","т":"t","у":"u","ф":"f","х":"x","ц":"ts","ч":"ch","ш":"sh","щ":"sh","ъ":"","ы":"i","ь":"","э":"e","ю":"yu","я":"ya","ў":"o","қ":"q","ғ":"g","ҳ":"h"};
@@ -722,6 +734,7 @@ function jForm(a){
  return "";
 }
 async function jExec(btn){
+ jUnlockAudio();
  const a=jAction;const done=busy(btn,"Бажарилмоқда…");let msg="",err=null;
  try{
   if(a.type==="create_lead"){
