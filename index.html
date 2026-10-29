@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0B5D45">
 <title>VAYQEN CRM</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -31,7 +31,8 @@ body{padding-bottom:82px}
 .toprow{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .logo{font-size:22px;font-weight:900;letter-spacing:.5px}
 .sub{font-size:12px;opacity:.85;margin-top:3px}
-.chip{background:var(--gold);color:#1b2b26;font-weight:800;padding:7px 10px;border-radius:999px;font-size:12px}
+.sub select{padding:4px 6px;font-size:13px;border-radius:8px;width:auto;max-width:48vw}
+.chip{background:var(--gold);color:#1b2b26;font-weight:800;padding:7px 10px;border-radius:999px;font-size:12px;max-width:38vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 main{padding:12px;max-width:640px;margin:auto}
 .page{display:none}.page.active{display:block}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -50,14 +51,15 @@ main{padding:12px;max-width:640px;margin:auto}
 label{display:block;font-size:12px;color:var(--muted);font-weight:800;margin:10px 0 5px}
 input,select,textarea{
  width:100%;padding:13px 12px;border-radius:12px;border:1px solid #cfd9d5;
- background:#fff;font-size:16px;outline:none
+ background:#fff;font-size:16px;outline:none;color:var(--ink)
 }
 textarea{min-height:90px;resize:vertical;font-family:inherit}
 select,input,button{font-family:inherit}
+input:disabled,select:disabled,textarea:disabled{background:#f1efe9;color:var(--muted)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .btn{
  width:100%;border:0;border-radius:14px;padding:13px 14px;margin-top:10px;
- font-weight:900;font-size:15px
+ font-weight:900;font-size:15px;cursor:pointer
 }
 .btn.primary{background:var(--green);color:#fff}
 .btn.gold{background:var(--gold);color:#1b2b26}
@@ -67,17 +69,18 @@ select,input,button{font-family:inherit}
 .itemtop{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
 .item h4{margin:0;font-size:15px}
 .pill{font-size:11px;font-weight:900;padding:5px 8px;border-radius:999px;background:var(--soft);white-space:nowrap}
+.pill.warn{background:#fdeeee;color:var(--danger)}
 .meta{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.5}
 .money{font-size:17px;font-weight:900;color:var(--green);margin-top:8px}
 .progress{height:8px;background:#edf0ed;border-radius:999px;overflow:hidden;margin-top:10px}
 .progress span{display:block;height:100%;background:var(--green)}
 .bottomnav{
  position:fixed;bottom:0;left:0;right:0;z-index:20;
- background:#fff;border-top:1px solid var(--line);display:grid;
- grid-template-columns:repeat(5,1fr);padding:6px 4px max(6px,env(safe-area-inset-bottom))
+ background:#fff;border-top:1px solid var(--line);display:flex;
+ padding:6px 4px max(6px,env(safe-area-inset-bottom))
 }
 .bottomnav button{
- border:0;background:transparent;color:#66736e;font-size:10px;font-weight:800;
+ flex:1;border:0;background:transparent;color:#66736e;font-size:10px;font-weight:800;
  padding:6px 1px
 }
 .bottomnav button span{display:block;font-size:21px;line-height:22px;margin-bottom:2px}
@@ -88,7 +91,7 @@ select,input,button{font-family:inherit}
  box-shadow:0 8px 22px #0003;z-index:15
 }
 .role{border-left:5px solid var(--green)}
-.smallbtn{border:0;border-radius:10px;padding:9px 10px;font-weight:800;background:#edf4f1;color:var(--ink)}
+.smallbtn{border:0;border-radius:10px;padding:9px 10px;font-weight:800;background:#edf4f1;color:var(--ink);cursor:pointer}
 .kpirow{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding:9px 0;font-size:13px}
 @media(min-width:700px){body{padding-bottom:20px}.bottomnav{left:50%;transform:translateX(-50%);max-width:640px;border:1px solid var(--line);border-radius:18px 18px 0 0}.fab{right:calc(50% - 300px)}}
 #appShell{display:none}
@@ -96,8 +99,8 @@ select,input,button{font-family:inherit}
 .login-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 8px 28px #17342c12}
 .login-card h1{margin:0 0 6px;color:var(--green)}
 .login-card p{color:var(--muted);font-size:14px;line-height:1.5}
-.logout{border:1px solid #ffffff66;background:#ffffff16;color:#fff;border-radius:10px;padding:8px 10px;font-weight:800}
-.top-right{display:flex;align-items:center;gap:8px}
+.logout{border:1px solid #ffffff66;background:#ffffff16;color:#fff;border-radius:10px;padding:8px 10px;font-weight:800;cursor:pointer}
+.top-right{display:flex;align-items:center;gap:6px}
 .item{cursor:pointer}
 .item:active{transform:scale(.99)}
 a.tel{color:var(--green);font-weight:800;text-decoration:none}
@@ -109,7 +112,7 @@ a.tel{color:var(--green);font-weight:800;text-decoration:none}
 @media(prefers-reduced-motion:reduce){.sheet{animation:none}}
 .sheethead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .sheethead h3{margin:0;font-size:19px}
-.close{border:0;background:#e7e2d7;border-radius:50%;width:36px;height:36px;font-size:18px;font-weight:900;flex:none}
+.close{border:0;background:#e7e2d7;border-radius:50%;width:36px;height:36px;font-size:18px;font-weight:900;flex:none;cursor:pointer}
 .ai{background:var(--soft);border:1px solid #c8e7d2;border-radius:14px;padding:12px;margin-top:10px;font-size:14px;line-height:1.5;white-space:pre-wrap}
 .ai b{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
 .sub2{font-size:15px;font-weight:900;margin:18px 0 4px}
@@ -133,9 +136,33 @@ main{padding-bottom:90px}
 .permgrid label{display:flex;align-items:center;gap:8px;margin:4px 0;font-weight:700;color:var(--ink)}
 .permgrid input{width:20px;height:20px;padding:0;flex:none}
 .hide{display:none!important}
+.filters{display:grid;grid-template-columns:1fr 46%;gap:8px;margin-bottom:4px}
+.filters input,.filters select{padding:11px 10px;font-size:15px}
+.hint{font-size:12px;margin-top:5px;color:var(--danger);font-weight:700}
+.due{color:var(--danger);font-weight:800}
+.toast{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translate(-50%,-160%);z-index:60;background:#17342c;color:#fff;padding:12px 16px;border-radius:14px;font-size:14px;font-weight:700;box-shadow:0 8px 24px #0004;max-width:92vw;transition:transform .25s}
+.toast.show{transform:translate(-50%,0)}
+.offbar{background:#b33a3a;color:#fff;font-size:12px;font-weight:800;text-align:center;padding:6px;margin-top:8px;border-radius:10px}
+.links{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.links a{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;font-weight:800;color:var(--green);text-decoration:none}
+.note{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 11px;margin:6px 0;font-size:13px;white-space:pre-wrap;line-height:1.45}
+.note small{display:flex;justify-content:space-between;gap:6px;color:var(--muted);font-size:11px;margin-bottom:3px;white-space:normal}
+.note small button{border:0;background:none;color:var(--danger);font-weight:900;cursor:pointer;padding:0 2px}
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.photos div{position:relative}
+.photos img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;display:block;background:#e7e2d7}
+.photos button{position:absolute;top:4px;right:4px;border:0;border-radius:50%;width:26px;height:26px;background:#000a;color:#fff;font-weight:900;cursor:pointer}
+.barrow{display:grid;grid-template-columns:62px 1fr auto;gap:8px;align-items:center;font-size:12px;padding:5px 0}
+.barrow .track{height:10px;background:#edf0ed;border-radius:999px;overflow:hidden}
+.barrow .track span{display:block;height:100%;background:var(--green);border-radius:999px}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th,.tbl td{text-align:left;padding:7px 4px;border-bottom:1px dashed var(--line)}
+.tbl th{color:var(--muted);font-size:11px}
+.tbl td.r,.tbl th.r{text-align:right}
 </style>
 </head>
 <body>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 <div id="loginWrap" class="loginwrap">
  <div class="login-card">
   <h1>VAYQEN CRM</h1><p>LESEL BUSINESS иш жойига хавфсиз кириш</p>
@@ -149,8 +176,10 @@ main{padding-bottom:90px}
 <div id="appShell">
 <div class="top">
  <div class="toprow">
-  <div><div class="logo">VAYQEN</div><div id="companyLabel" class="sub">LESEL BUSINESS</div></div><div class="top-right"><div id="userLabel" class="chip">Аккаунт</div><button class="logout" onclick="signOut()">Чиқиш</button></div>
+  <div><div class="logo">VAYQEN</div><div id="companyLabel" class="sub">LESEL BUSINESS</div></div>
+  <div class="top-right"><div id="userLabel" class="chip">Аккаунт</div><button class="logout" id="refreshBtn" onclick="manualRefresh(this)" aria-label="Янгилаш">⟳</button><button class="logout" onclick="signOut()">Чиқиш</button></div>
  </div>
+ <div id="offBar" class="offbar hide">Интернет йўқ — охирги сақланган маълумот кўрсатилмоқда</div>
 </div>
 
 <main>
@@ -158,8 +187,11 @@ main{padding-bottom:90px}
  <div class="grid2" id="homeMetrics"></div>
  <div id="flowWrap"><div class="sectionTitle">Савдо жараёни</div>
  <div class="flow" id="flow"></div></div>
+ <div id="overdueWrap" class="hide"><div class="sectionTitle due">Муддати ўтган ишлар</div><div id="overdueList"></div></div>
  <div class="sectionTitle">Бугунги ишлар</div>
  <div id="todayList"></div>
+ <div id="callWrap" class="hide"><div class="sectionTitle">Қўнғироқ қилиш керак</div><div id="callList"></div></div>
+ <div id="prodWrap" class="hide"><div class="sectionTitle">Ишлаб чиқаришдаги буюртмалар</div><div id="prodList"></div></div>
  <div id="moneyWrap"><div class="sectionTitle">Молия</div>
  <div class="card" id="moneyBrief"></div></div>
 </section>
@@ -168,32 +200,55 @@ main{padding-bottom:90px}
  <div class="card">
   <h3>Янги мижоз</h3>
   <label>Мижоз / компания</label><input id="leadName" placeholder="Масалан: Grand Cafe">
-  <label>Телефон</label><input id="leadPhone" type="tel" placeholder="+998 ...">
+  <label>Телефон</label><input id="leadPhone" type="tel" placeholder="+998 ..." oninput="phoneHint()"><div id="leadPhoneHint" class="hint"></div>
   <div class="row">
-   <div><label>Манба</label><select id="leadSource"><option>Instagram</option><option>Telegram</option><option>WhatsApp</option><option>Telefon</option><option>Tavsiya</option></select></div>
-   <div><label>Маҳсулот</label><select id="leadProduct"><option>Markiza</option><option>Zontik</option><option>Pergola</option><option>ZIP Screen</option></select></div>
+   <div><label>Манба</label><select id="leadSource"></select></div>
+   <div><label>Маҳсулот</label><select id="leadProduct"></select></div>
   </div>
   <label>Ҳудуд / манзил</label><input id="leadCity" placeholder="Тошкент / Қарши">
+  <div class="row">
+   <div><label>Тахминий сумма (сўм)</label><input id="leadAmount" type="number" inputmode="numeric" min="0"></div>
+   <div id="leadNextWrap"><label>Кейинги алоқа</label><input id="leadNext" type="datetime-local"></div>
+  </div>
   <label>Изоҳ (AI ёрдамчи шундан фойдаланади)</label><textarea id="leadNotes" placeholder="Мижоз нима сўради, ўлчами, бюджети..."></textarea>
-  <button class="btn primary" onclick="addLead()">+ CRM’га сақлаш</button>
+  <button class="btn primary" onclick="addLead(this)">+ CRM’га сақлаш</button>
  </div>
- <div class="sectionTitle">Лидлар</div>
+ <div class="sectionTitle">Лидлар <span class="muted" id="leadCount"></span></div>
+ <div class="filters"><input id="leadQ" type="search" placeholder="🔍 Исм, телефон, манзил…" oninput="renderLeads()"><select id="leadF" onchange="renderLeads()"></select></div>
  <div id="leadList"></div>
 </section>
 
 <section id="orders" class="page">
- <div class="sectionTitle">Буюртмалар</div>
+ <div class="sectionTitle">Буюртмалар <span class="muted" id="orderCount"></span></div>
+ <div class="filters"><input id="orderQ" type="search" placeholder="🔍 Рақам, исм, телефон…" oninput="renderOrders()"><select id="orderF" onchange="renderOrders()"></select></div>
  <div id="orderList"></div>
 </section>
 
 <section id="work" class="page">
- <div class="sectionTitle">Ўлчов</div><div id="measureList"></div>
- <div class="sectionTitle">Монтаж</div><div id="installList"></div>
+ <div class="filters"><input id="workQ" type="search" placeholder="🔍 Вазифа, манзил…" oninput="renderWork()"><select id="workF" onchange="renderWork()"><option value="open">Очиқ вазифалар</option><option value="mine">Менга тайинланган</option><option value="overdue">Муддати ўтган</option><option value="">Ҳаммаси</option></select></div>
+ <div id="measureWrap"><div class="sectionTitle">Ўлчов</div><div id="measureList"></div></div>
+ <div id="installWrap"><div class="sectionTitle">Монтаж</div><div id="installList"></div></div>
 </section>
 
 <section id="more" class="page">
- <div class="card role"><h3>VAYQEN CRM</h3><div class="meta">Лидлар, буюртмалар, тўловлар, ўлчов ва монтаж вазифалари, AI жавоб ёрдамчиси.</div></div>
- <div class="card role" style="margin-top:10px"><h3>Илова сифатида ўрнатиш</h3><div class="meta">Android: браузер менюси ⋮ → «Бош экранга қўшиш». iPhone: Safari’да «Улашиш» → «На экран Домой». Mac: Safari’да Файл → «Добавить в Dock».</div></div>
+ <div class="card role"><h3>VAYQEN CRM</h3><div class="meta">Лидлар, буюртмалар, тўловлар, ўлчов ва монтаж вазифалари, ҳисоботлар, AI жавоб ёрдамчиси.</div></div>
+ <div id="reportsWrap" class="hide"><div class="sectionTitle">Ҳисоботлар</div>
+  <div class="card"><label style="margin-top:0">Давр</label><select id="repPeriod" onchange="renderReports()"><option value="month">Шу ой</option><option value="prev">Ўтган ой</option><option value="quarter">Охирги 3 ой</option><option value="year">Шу йил</option><option value="all">Бутун вақт</option></select><div id="reports"></div></div>
+ </div>
+ <div class="sectionTitle">Аккаунт</div>
+ <div class="card">
+  <button class="btn soft" style="margin-top:0" onclick="openPasswordSheet(false)">🔑 Паролимни алмаштириш</button>
+  <button class="btn soft" id="notifBtn" onclick="enableNotifications(this)">🔔 Хабарномаларни ёқиш</button>
+  <div class="meta">Хабарнома: сизга янги вазифа тайинланса, вақти ўзгарса, янги лид тушса ёки мижозга қўнғироқ вақти келса, илова очиқ турганда огоҳлантиради.</div>
+ </div>
+ <div id="settingsWrap" class="hide"><div class="sectionTitle">Созламалар</div>
+  <div class="card"><h3>Маҳсулотлар ва манбалар</h3>
+   <label>Маҳсулотлар (ҳар бири янги қаторда)</label><textarea id="setProducts"></textarea>
+   <label>Мижоз манбалари (ҳар бири янги қаторда)</label><textarea id="setSources"></textarea>
+   <button class="btn primary" onclick="saveSettings(this)">Сақлаш</button>
+   <div id="settingsNote" class="meta"></div>
+  </div>
+ </div>
  <div id="staffWrap" class="hide"><div class="sectionTitle">Ходимлар</div>
   <div class="card"><h3>Янги ходим</h3>
    <label>Email</label><input id="sEmail" type="email" autocomplete="off" placeholder="xodim@gmail.com">
@@ -204,19 +259,25 @@ main{padding-bottom:90px}
   </div>
   <div id="staffList"></div>
  </div>
- <div class="sectionTitle">Маълумот нусхаси</div><div class="card"><button class="btn soft" onclick="exportData()">CRM маълумотларини экспорт қилиш</button></div>
+ <div id="exportWrap"><div class="sectionTitle">Маълумот нусхаси</div><div class="card">
+  <div class="meta" style="margin-top:0">Excel’да очиладиган CSV файллар:</div>
+  <div class="row"><button class="btn soft" data-csv="customers" onclick="exportCSV('customers')">Мижозлар</button><button class="btn soft" data-csv="leads" onclick="exportCSV('leads')">Лидлар</button></div>
+  <div class="row"><button class="btn soft" data-csv="orders" onclick="exportCSV('orders')">Буюртмалар</button><button class="btn soft" data-csv="payments" onclick="exportCSV('payments')">Тўловлар</button></div>
+  <button class="btn soft" data-csv="jobs" onclick="exportCSV('jobs')">Ўлчов ва монтаж</button>
+  <button class="btn soft" onclick="exportData()">Тўлиқ захира нусха (JSON)</button></div></div>
+ <div class="card role" style="margin-top:14px"><h3>Илова сифатида ўрнатиш</h3><div class="meta">Android: браузер менюси ⋮ → «Бош экранга қўшиш». iPhone: Safari’да «Улашиш» → «На экран Домой». Mac: Safari’да Файл → «Добавить в Dock».</div></div>
 </section>
 </main>
 
 <button class="jfab" id="jfab" onclick="openJarvis()" aria-label="Jarvis овозли ёрдамчи">🎙</button>
-<button class="fab" id="fab" onclick="go('leads')" aria-label="Янги лид">+</button>
+<button class="fab" id="fab" onclick="go('leads');setTimeout(()=>$('leadName').focus(),300)" aria-label="Янги лид">+</button>
 
 <div class="bottomnav">
- <button class="active" data-page="home" onclick="go('home',this)"><span>⌂</span>Bosh sahifa</button>
- <button data-page="leads" onclick="go('leads',this)"><span>◎</span>Lidlar</button>
- <button data-page="orders" onclick="go('orders',this)"><span>▣</span>Buyurtma</button>
- <button data-page="work" onclick="go('work',this)"><span>⚒</span>Ishlar</button>
- <button data-page="more" onclick="go('more',this)"><span>⋯</span>Ko'proq</button>
+ <button class="active" data-page="home" onclick="go('home',this)"><span>⌂</span>Бош саҳифа</button>
+ <button data-page="leads" onclick="go('leads',this)"><span>◎</span>Лидлар</button>
+ <button data-page="orders" onclick="go('orders',this)"><span>▣</span>Буюртма</button>
+ <button data-page="work" onclick="go('work',this)"><span>⚒</span>Ишлар</button>
+ <button data-page="more" onclick="go('more',this)"><span>⋯</span>Яна</button>
 </div>
 </div>
 
@@ -226,9 +287,14 @@ main{padding-bottom:90px}
 const SUPABASE_URL="https://cjhktphfgneamwnhsykq.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_lgjLjQ4mmDRJfDBJdoJF_Q_hoSfnNUn";
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-let myRole="manager",myPerms={},staff=[],companyId=null,companies=[],customers=[],leads=[],orders=[],jobs=[],payments=[],currentUser=null,customerMap=new Map(),lastAiReply="";
+const BUCKET="crm-files";
+let myRole="manager",myPerms={},staff=[],companyId=null,companies=[],customers=[],leads=[],orders=[],jobs=[],payments=[],notes=[],settings=null,currentUser=null,customerMap=new Map(),lastAiReply="";
+let feat={notes:false,next:false,rpc:true,settings:false},offline=false,rtChannel=null,known=null,recovery=false,reloadTimer=null,lastReminder=Date.now(),loading=null;
+const DEFAULT_PRODUCTS=["Markiza","Zontik","Pergola","ZIP Screen"];
+const DEFAULT_SOURCES=["Instagram","Telegram","WhatsApp","Telefon","Tavsiya"];
 const leadStatus={new:"Янги",contacted:"Алоқа қилинган",qualified:"Сараланган",proposal:"Таклиф берилган",won:"Сотув бўлган",lost:"Йўқотилган"};
 const orderStatus={new:"Янги",measurement:"Ўлчов",quotation:"Нарх таклифи",confirmed:"Тасдиқланган",production:"Ишлаб чиқариш",installation:"Монтаж",completed:"Бажарилган",cancelled:"Бекор қилинган"};
+const prodStatus={confirmed:"Тасдиқланган",production:"Ишлаб чиқариш",installation:"Монтажга тайёр"};
 const jobStatus={scheduled:"Режада",in_progress:"Жараёнда",completed:"Бажарилди",cancelled:"Бекор қилинди"};
 const jobKind={measurement:"Ўлчов",installation:"Монтаж"};
 const roleName={manager:"Менежер",sales:"Сотувчи",installer:"Монтажчи",production:"Ишлаб чиқариш",finance:"Молия"};
@@ -241,26 +307,47 @@ function rolePreset(role){const p={};["measurement","installation"].forEach(k=>O
 const isManager=()=>myRole==="manager";
 const canSell=()=>isManager()||myRole==="sales";
 const canFinance=()=>isManager()||myRole==="finance";
+const isProd=()=>myRole==="production";
+const canOrders=()=>canSell()||canFinance()||isProd();
 const canJob=(kind,act)=>isManager()||!!myPerms[kind+"_"+act];
-const staffName=id=>{const m=staff.find(x=>x.user_id===id);return m?m.email:(id===currentUser?.id?"Сиз":"")};
+const staffName=id=>{if(!id)return"";if(id===currentUser?.id)return"Сиз";const m=staff.find(x=>x.user_id===id);return m?m.email:""};
 async function callFn(name,body){const {data,error}=await sb.functions.invoke(name,{body});if(!error)return{data};let msg=error.message;try{const b=await error.context.json();if(b?.error)msg=b.error}catch{}return{error:msg}}
 const curLabel={UZS:"сўм",USD:"$",EUR:"€"};
 const payKind={prepayment:"Бўнак",payment:"Тўлов",refund:"Қайтариш"};
 const payMethod={cash:"Нақд",card:"Карта",transfer:"Ўтказма",click:"Click",payme:"Payme"};
 const todayISO=()=>{const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)};
+const startOfToday=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
+const endOfToday=()=>{const d=new Date();d.setHours(23,59,59,999);return d};
+const openJob=j=>["scheduled","in_progress"].includes(j.status);
+const isOverdue=j=>openJob(j)&&j.scheduled_at&&new Date(j.scheduled_at)<startOfToday();
+const leadDue=l=>feat.next&&l.next_contact_at&&!["won","lost"].includes(l.status)&&new Date(l.next_contact_at)<=endOfToday();
 function paidFor(o){return payments.filter(p=>p.order_id===o.id).reduce((a,p)=>a+(p.kind==="refund"?-1:1)*Number(p.amount),0)}
 function debtFor(o){return o.amount==null||o.status==="cancelled"?0:Math.max(0,Number(o.amount)-paidFor(o))}
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const $=id=>document.getElementById(id);
-const val=id=>$(id).value.trim();
-const opts=(map,sel)=>Object.entries(map).map(([k,v])=>'<option value="'+k+'"'+(k===sel?" selected":"")+'>'+v+'</option>').join("");
+const val=id=>$(id)?$(id).value.trim():"";
+const opts=(map,sel)=>Object.entries(map).map(([k,v])=>'<option value="'+esc(k)+'"'+(k===sel?" selected":"")+'>'+esc(v)+'</option>').join("");
+const listOpts=(arr,sel)=>{const a=[...arr];if(sel&&!a.includes(sel))a.push(sel);return a.map(x=>'<option value="'+esc(x)+'"'+(x===sel?" selected":"")+'>'+esc(x)+'</option>').join("")};
+const products=()=>settings?.products?.length?settings.products:DEFAULT_PRODUCTS;
+const sources=()=>settings?.sources?.length?settings.sources:DEFAULT_SOURCES;
 const numOrNull=v=>v===""?null:Number(v);
+const phoneKey=p=>String(p||"").replace(/\D/g,"").slice(-9);
+const telHref=p=>"tel:"+String(p).replace(/[^\d+]/g,"");
+const waNum=p=>{let d=String(p||"").replace(/\D/g,"");if(d.length===9)d="998"+d;return d};
 function money(n,cur="UZS"){return new Intl.NumberFormat("uz-UZ").format(Math.round(Number(n)||0))+" "+(curLabel[cur]||cur)}
 function fmtDate(d){return d?new Date(d).toLocaleDateString("uz-UZ"):""}
 function fmtDT(d){return d?new Date(d).toLocaleString("uz-UZ",{dateStyle:"short",timeStyle:"short"}):"Вақт белгиланмаган"}
 function toLocalInput(d){if(!d)return"";const t=new Date(d);t.setMinutes(t.getMinutes()-t.getTimezoneOffset());return t.toISOString().slice(0,16)}
+const fromLocalInput=v=>v?new Date(v).toISOString():null;
 function authMessage(text,bad=false){const m=$("authMessage");m.textContent=text;m.className="alert"+(bad?" bad":" ok");m.style.display="block"}
-function reportError(label,error){console.error(label,error);alert(label+": "+(error?.message||"номаълум хатолик"))}
+function reportError(label,error){console.error(label,error);if(!navigator.onLine)return alert(label+": интернет йўқ. Уланиш тиклангач қайта уриниб кўринг.");alert(label+": "+(error?.message||"номаълум хатолик"))}
+function toast(text){const t=$("toast");t.textContent=text;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),4500)}
+function notify(title,body){
+ toast(title+(body?": "+body:""));
+ if(!("Notification" in window)||Notification.permission!=="granted"||!document.hidden)return;
+ const opt={body:body||"",icon:"icon-192.png",badge:"icon-192.png"};
+ (navigator.serviceWorker?navigator.serviceWorker.ready.then(r=>r.showNotification(title,opt)):Promise.reject()).catch(()=>{try{new Notification(title,opt)}catch{}});
+}
 
 /* ---------- Кириш ---------- */
 async function signIn(){
@@ -269,18 +356,40 @@ async function signIn(){
  b.disabled=true;b.textContent="Текширилмоқда…";
  const {error}=await sb.auth.signInWithPassword({email,password});
  b.disabled=false;b.textContent="Кириш";
- if(error)return authMessage("Кириш амалга ошмади. Email ва паролни текширинг ёки тиклаш ҳаволасини сўранг.",true);
+ if(error)return authMessage(navigator.onLine?"Кириш амалга ошмади. Email ва паролни текширинг ёки тиклаш ҳаволасини сўранг.":"Интернет йўқ. Уланишни текширинг.",true);
+ $("authPassword").value="";
  await boot();
 }
 async function sendPasswordReset(){
  const email=val("authEmail");
  if(!email)return authMessage("Аввал email манзилингизни киритинг.",true);
- const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.href.split("#")[0]});
- authMessage(error?"Тиклаш хатини юбориб бўлмади.":"Агар бу email рўйхатда бўлса, тиклаш ҳаволаси юборилди.",!!error);
+ const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.href.split("#")[0].split("?")[0]});
+ authMessage(error?"Тиклаш хатини юбориб бўлмади. Бироздан сўнг қайта уриниб кўринг.":"Агар бу email рўйхатда бўлса, тиклаш ҳаволаси юборилди. Хатдаги ҳаволани босинг — илова очилиб, янги парол сўрайди.",!!error);
+}
+function openPasswordSheet(force){
+ openSheet(force?"Янги парол ўрнатинг":"Паролни алмаштириш",
+  (force?'<div class="alert">Паролни тиклаш ҳаволаси орқали кирдингиз. Давом этишдан олдин янги парол ўрнатинг.</div>':"")+
+  '<label>Янги парол (камида 8 белги)</label><input id="np1" type="password" autocomplete="new-password">'+
+  '<label>Янги паролни қайта киритинг</label><input id="np2" type="password" autocomplete="new-password" onkeydown="if(event.key===\'Enter\')setMyPassword($(\'npBtn\'))">'+
+  '<button class="btn primary" id="npBtn" onclick="setMyPassword(this)">Паролни сақлаш</button>');
+ setTimeout(()=>$("np1")?.focus(),200);
+}
+async function setMyPassword(btn){
+ const p1=$("np1").value,p2=$("np2").value;
+ if(p1.length<8)return alert("Парол камида 8 белгидан иборат бўлсин.");
+ if(p1!==p2)return alert("Икки парол бир хил эмас.");
+ const done=busy(btn,"Сақланмоқда…");
+ const {error}=await sb.auth.updateUser({password:p1});
+ done();
+ if(error)return reportError("Паролни сақлашда хатолик",error);
+ recovery=false;closeSheet(true);toast("Янги парол сақланди ✓");
 }
 async function signOut(){
- await sb.auth.signOut();myRole="manager";myPerms={};staff=[];companyId=null;companies=[];customers=[];leads=[];orders=[];jobs=[];currentUser=null;
- $("appShell").style.display="none";$("loginWrap").style.display="block";
+ if(rtChannel){try{sb.removeChannel(rtChannel)}catch{}rtChannel=null}
+ await sb.auth.signOut();
+ try{localStorage.removeItem("vq_snap")}catch{}
+ myRole="manager";myPerms={};staff=[];companyId=null;companies=[];customers=[];leads=[];orders=[];jobs=[];payments=[];notes=[];settings=null;currentUser=null;customerMap=new Map();known=null;offline=false;
+ closeSheet(true);$("appShell").style.display="none";$("loginWrap").style.display="block";
 }
 async function boot(){
  const {data:{session}}=await sb.auth.getSession();
@@ -292,31 +401,90 @@ async function boot(){
   if(error)throw error;
   companies=data||[];
   if(!companies.length)throw new Error("Бу аккаунтга очиқ компания топилмади. Аккаунт рухсатини текшириш керак.");
+  let saved=null;try{saved=Number(localStorage.getItem("vq_company"))}catch{}
+  if(!companyId&&saved&&companies.some(c=>Number(c.id)===saved))companyId=saved;
   if(!companyId||!companies.some(c=>Number(c.id)===Number(companyId)))companyId=Number(companies[0].id);
   await loadData();
- }catch(e){$("companyLabel").textContent="Маълумот очилмади";reportError("CRM маълумотларини юклашда хатолик",e)}
+  subscribeRealtime();
+ }catch(e){
+  const net=!navigator.onLine||/fetch|network|Failed/i.test(e?.message||"");
+  if(!(net&&loadSnapshot())){$("companyLabel").textContent="Маълумот очилмади";reportError("CRM маълумотларини юклашда хатолик",e)}
+ }
+ if(recovery)openPasswordSheet(true);
 }
 
 /* ---------- Маълумот ---------- */
 async function loadData(){
- const [c,l,o,j,p]=await Promise.all([
-  sb.from("crm_customers").select("id,name,phone,address,notes,created_at").eq("company_id",companyId).order("created_at",{ascending:false}),
-  sb.from("crm_leads").select("id,customer_id,title,source,notes,status,estimated_amount,created_at").eq("company_id",companyId).order("created_at",{ascending:false}),
-  sb.from("crm_orders").select("id,customer_id,lead_id,reference_code,title,description,status,amount,currency,created_at").eq("company_id",companyId).order("created_at",{ascending:false}),
-  sb.from("crm_jobs").select("id,order_id,kind,title,scheduled_at,due_date,assigned_to,address,contact_phone,width_cm,projection_cm,notes,result_notes,progress,status,created_at").eq("company_id",companyId).order("scheduled_at",{ascending:true,nullsFirst:false}),
-  sb.from("crm_payments").select("id,order_id,kind,method,amount,currency,paid_at,note,created_at").eq("company_id",companyId).order("paid_at",{ascending:false})
- ]);
- for(const r of [c,l,o,j,p])if(r.error)throw r.error;
- customers=c.data||[];leads=l.data||[];orders=o.data||[];jobs=j.data||[];payments=p.data||[];
- customerMap=new Map(customers.map(x=>[x.id,x]));
- const [mr,pr]=await Promise.all([
-  sb.from("company_members").select("role").eq("company_id",companyId).eq("user_id",currentUser.id).maybeSingle(),
-  sb.from("crm_member_permissions").select("*").eq("company_id",companyId).eq("user_id",currentUser.id).maybeSingle()]);
- myRole=mr.data?.role||"manager";myPerms=pr.data||{};
- if(isManager()){const r=await callFn("crm-members",{action:"list",company_id:companyId});staff=r.data?.members||[]}else staff=[];
- updateCompanyLabel();applyRoleUI();render();
+ if(loading)return loading;
+ loading=(async()=>{
+  const [mr,pr]=await Promise.all([
+   sb.from("company_members").select("role").eq("company_id",companyId).eq("user_id",currentUser.id).maybeSingle(),
+   sb.from("crm_member_permissions").select("*").eq("company_id",companyId).eq("user_id",currentUser.id).maybeSingle()]);
+  if(mr.error)throw mr.error;
+  myRole=mr.data?.role||"manager";myPerms=pr.data||{};
+  const none=Promise.resolve({data:[]});
+  const [c,l,o,j,p,n,s]=await Promise.all([
+   canSell()||canFinance()?sb.from("crm_customers").select("*").eq("company_id",companyId).order("created_at",{ascending:false}):none,
+   canSell()?sb.from("crm_leads").select("*").eq("company_id",companyId).order("created_at",{ascending:false}):none,
+   canOrders()?sb.from("crm_orders").select("*").eq("company_id",companyId).order("created_at",{ascending:false}):none,
+   sb.from("crm_jobs").select("*").eq("company_id",companyId).order("scheduled_at",{ascending:true,nullsFirst:false}),
+   canSell()||canFinance()?sb.from("crm_payments").select("*").eq("company_id",companyId).order("paid_at",{ascending:false}):none,
+   canSell()||canFinance()?sb.from("crm_notes").select("id,entity_type,entity_id,body,created_by,created_at").eq("company_id",companyId).order("created_at",{ascending:false}).limit(3000):none,
+   sb.from("crm_company_settings").select("products,sources").eq("company_id",companyId).maybeSingle()
+  ]);
+  for(const r of [c,l,o,j,p])if(r.error)throw r.error;
+  customers=c.data||[];leads=l.data||[];orders=o.data||[];jobs=j.data||[];payments=p.data||[];
+  feat.notes=!n.error&&(canSell()||canFinance());notes=n.error?[]:(n.data||[]);
+  feat.settings=!s.error;settings=s.error?null:s.data;
+  if(canSell()){
+   if(leads.length)feat.next="next_contact_at" in leads[0];
+   else{const t=await sb.from("crm_leads").select("next_contact_at").limit(1);feat.next=!t.error}
+  }else feat.next=false;
+  customerMap=new Map(customers.map(x=>[x.id,x]));
+  if(isManager()){const r=await callFn("crm-members",{action:"list",company_id:companyId});staff=r.data?.members||[]}else staff=[];
+  offline=false;$("offBar").classList.add("hide");
+  saveSnapshot();
+  updateCompanyLabel();applyRoleUI();render();detectChanges();
+ })();
+ try{return await loading}finally{loading=null}
 }
-async function reload(){try{await loadData()}catch(e){reportError("Маълумотни янгилашда хатолик",e)}}
+async function reload(silent){try{await loadData()}catch(e){if(silent)console.warn("reload",e);else reportError("Маълумотни янгилашда хатолик",e)}}
+async function manualRefresh(btn){btn.disabled=true;btn.textContent="…";await reload(false);btn.disabled=false;btn.textContent="⟳";if(!offline)toast("Маълумот янгиланди ✓")}
+function scheduleReload(){clearTimeout(reloadTimer);reloadTimer=setTimeout(()=>reload(true),700)}
+function subscribeRealtime(){
+ if(rtChannel){try{sb.removeChannel(rtChannel)}catch{}rtChannel=null}
+ try{
+  rtChannel=sb.channel("crm-"+companyId);
+  ["crm_customers","crm_leads","crm_orders","crm_jobs","crm_payments","crm_notes"].forEach(t=>rtChannel.on("postgres_changes",{event:"*",schema:"public",table:t,filter:"company_id=eq."+companyId},scheduleReload));
+  rtChannel.subscribe();
+ }catch(e){console.warn("realtime",e)}
+}
+function saveSnapshot(){try{localStorage.setItem("vq_snap",JSON.stringify({uid:currentUser.id,companyId,companies,myRole,myPerms,customers,leads,orders,jobs,payments,notes,settings,staff,feat,at:Date.now()}));localStorage.setItem("vq_company",String(companyId))}catch{}}
+function loadSnapshot(){
+ try{const s=JSON.parse(localStorage.getItem("vq_snap")||"null");if(!s||s.uid!==currentUser.id)return false;
+  ({companyId,companies,myRole,myPerms,customers,leads,orders,jobs,payments,notes,settings,staff}=s);feat={...feat,...s.feat};
+  customerMap=new Map(customers.map(x=>[x.id,x]));offline=true;
+  $("offBar").textContent="Интернет йўқ — "+fmtDT(s.at)+" ҳолатидаги маълумот кўрсатилмоқда";$("offBar").classList.remove("hide");
+  updateCompanyLabel();applyRoleUI();render();return true}catch{return false}
+}
+function detectChanges(){
+ const me=currentUser.id;
+ const mine=new Map(jobs.filter(j=>j.assigned_to===me&&openJob(j)).map(j=>[j.id,j.scheduled_at||""]));
+ const lids=new Set(leads.map(l=>l.id));
+ if(known&&known.company===companyId){
+  for(const [id,at] of mine){const j=jobs.find(x=>x.id===id);
+   if(!known.mine.has(id))notify("Сизга янги вазифа",j.title+" — "+fmtDT(j.scheduled_at));
+   else if(known.mine.get(id)!==at)notify("Вазифа вақти ўзгарди",j.title+" — "+fmtDT(j.scheduled_at))}
+  if(canSell())leads.filter(l=>!known.leads.has(l.id)&&l.created_by!==me).forEach(l=>notify("Янги лид",custName(l)+" • "+l.title));
+ }
+ known={company:companyId,mine,leads:lids};
+}
+function checkReminders(){
+ const now=Date.now();
+ if(feat.next&&canSell())leads.forEach(l=>{if(["won","lost"].includes(l.status)||!l.next_contact_at)return;const t=new Date(l.next_contact_at).getTime();if(t>lastReminder&&t<=now)notify("Қўнғироқ вақти келди",custName(l)+((customerMap.get(l.customer_id)||{}).phone?" • "+customerMap.get(l.customer_id).phone:""))});
+ jobs.forEach(j=>{if(j.assigned_to!==currentUser?.id||!openJob(j)||!j.scheduled_at)return;const t=new Date(j.scheduled_at).getTime()-30*60000;if(t>lastReminder&&t<=now)notify("30 дақиқадан сўнг вазифа",j.title+" — "+fmtDT(j.scheduled_at))});
+ lastReminder=now;
+}
 function updateCompanyLabel(){
  const el=$("companyLabel");
  if(companies.length>1){
@@ -325,7 +493,7 @@ function updateCompanyLabel(){
   select.onchange=()=>switchCompany(select.value);el.replaceChildren(select);
  }else el.textContent=companies[0]?.name||"Компания";
 }
-async function switchCompany(id){companyId=Number(id);await reload()}
+async function switchCompany(id){companyId=Number(id);known=null;await reload();subscribeRealtime()}
 function go(id,btn){
  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
  $(id).classList.add("active");
@@ -337,10 +505,22 @@ function go(id,btn){
 function applyRoleUI(){
  const show=(sel,on)=>document.querySelectorAll(sel).forEach(e=>e.classList.toggle("hide",!on));
  const anyJob=["measurement","installation"].some(k=>canJob(k,"view"));
- show('.bottomnav [data-page=leads]',canSell());show('.bottomnav [data-page=orders]',canSell()||canFinance());show('.bottomnav [data-page=work]',anyJob);
+ show('.bottomnav [data-page=leads]',canSell());show('.bottomnav [data-page=orders]',canOrders());show('.bottomnav [data-page=work]',anyJob);
  show('#fab',canSell());show('#flowWrap',canSell());show('#moneyWrap',canSell()||canFinance());show('#staffWrap',isManager());
+ show('#reportsWrap',canSell()||canFinance());show('#settingsWrap',isManager());show('#prodWrap',isProd());
+ show('#exportWrap',canSell()||canFinance()||anyJob);
+ show('[data-csv=customers],[data-csv=orders],[data-csv=payments]',canSell()||canFinance());show('[data-csv=leads]',canSell());
+ show('#measureWrap',canJob("measurement","view"));show('#installWrap',canJob("installation","view"));
+ show('#leadNextWrap',feat.next);
  $("userLabel").textContent=(currentUser.email||"")+(isManager()?"":" • "+roleName[myRole]);
  if(!$("sRole").options.length)$("sRole").innerHTML=opts(roleName,"installer");
+ const keep=(id,html)=>{const e=$(id),v=e.value;e.innerHTML=html;if([...e.options].some(o=>o.value===v))e.value=v};
+ keep("leadSource",listOpts(sources()));keep("leadProduct",listOpts(products()));
+ keep("leadF",'<option value="">Барча ҳолатлар</option><option value="open">Очиқ лидлар</option>'+(feat.next?'<option value="due">⏰ Қўнғироқ вақти келган</option>':"")+opts(leadStatus));
+ keep("orderF",'<option value="">Барча буюртмалар</option><option value="active">Фаол</option>'+(canSell()||canFinance()?'<option value="debt">Қарздорлар</option>':"")+opts(isProd()&&!canSell()?prodStatus:orderStatus));
+ if(isManager()&&document.activeElement?.id!=="setProducts"&&document.activeElement?.id!=="setSources"){$("setProducts").value=products().join("\n");$("setSources").value=sources().join("\n");
+  $("settingsNote").textContent=feat.settings?"":"Созламаларни сақлаш учун база янгиланиши керак (supabase/migrations файли)."}
+ if("Notification" in window&&Notification.permission==="granted")$("notifBtn").textContent="🔔 Хабарномалар ёқилган ✓";
 }
 function renderStaff(){
  if(!isManager())return;
@@ -348,53 +528,150 @@ function renderStaff(){
 }
 
 /* ---------- Кўриниш ---------- */
+function textMatch(q,...vals){
+ if(!q)return true;const nq=jNorm(q);
+ if(nq&&vals.some(v=>jNorm(v).includes(nq)))return true;
+ const d=q.replace(/\D/g,"");return d.length>=3&&vals.some(v=>String(v||"").replace(/\D/g,"").includes(d));
+}
 function leadCard(l){
  const c=customerMap.get(l.customer_id)||{};
- return '<div class="item" data-lead="'+esc(l.id)+'"><div class="itemtop"><h4>'+esc(c.name||l.title)+'</h4><span class="pill">'+esc(leadStatus[l.status]||l.status)+'</span></div><div class="meta">'+esc(c.phone||"Телефон киритилмаган")+'<br>'+esc(l.source||"Манба йўқ")+' • '+esc(l.title)+(c.address?" • "+esc(c.address):"")+'<br>'+fmtDate(l.created_at)+'</div>'+(l.estimated_amount!=null?'<div class="money">'+money(l.estimated_amount)+' <small>тахминан</small></div>':"")+'</div>';
+ const due=leadDue(l);
+ return '<div class="item" data-lead="'+esc(l.id)+'"><div class="itemtop"><h4>'+esc(c.name||l.title)+'</h4><span class="pill'+(due?" warn":"")+'">'+(due?"⏰ ":"")+esc(leadStatus[l.status]||l.status)+'</span></div><div class="meta">'+esc(c.phone||"Телефон киритилмаган")+'<br>'+esc(l.source||"Манба йўқ")+' • '+esc(l.title)+(c.address?" • "+esc(c.address):"")+'<br>'+fmtDate(l.created_at)+(feat.next&&l.next_contact_at&&!["won","lost"].includes(l.status)?' • <span class="'+(due?"due":"")+'">Алоқа: '+esc(fmtDT(l.next_contact_at))+'</span>':"")+'</div>'+(l.estimated_amount!=null?'<div class="money">'+money(l.estimated_amount)+' <small>тахминан</small></div>':"")+'</div>';
 }
 function orderCard(o){
  const c=customerMap.get(o.customer_id)||{};
  const js=jobs.filter(j=>j.order_id===o.id&&j.status!=="cancelled");
- return '<div class="item" data-order="'+esc(o.id)+'"><div class="itemtop"><h4>'+esc(o.reference_code||"Буюртма")+' • '+esc(c.name||o.title)+'</h4><span class="pill">'+esc(orderStatus[o.status]||o.status)+'</span></div><div class="meta">'+esc(o.title)+'<br>'+esc(c.phone||"")+' • '+fmtDate(o.created_at)+(js.length?'<br>Вазифалар: '+js.map(j=>jobKind[j.kind]+" ("+jobStatus[j.status]+")").join(", "):"")+'</div>'+(o.amount!=null?'<div class="money">'+money(o.amount,o.currency)+(debtFor(o)>0?' <small>қолдиқ '+money(debtFor(o),o.currency)+'</small>':(o.status!=="cancelled"?' <small>тўлиқ тўланган ✓</small>':""))+'</div>':"")+'</div>';
+ const showMoney=o.amount!=null&&(canSell()||canFinance());
+ return '<div class="item" data-order="'+esc(o.id)+'"><div class="itemtop"><h4>'+esc(o.reference_code||"Буюртма")+' • '+esc(c.name||o.title)+'</h4><span class="pill">'+esc(orderStatus[o.status]||o.status)+'</span></div><div class="meta">'+esc(o.title)+'<br>'+esc(c.phone||"")+(c.phone?" • ":"")+fmtDate(o.created_at)+(js.length?'<br>Вазифалар: '+js.map(j=>jobKind[j.kind]+" ("+jobStatus[j.status]+")").join(", "):"")+'</div>'+(showMoney?'<div class="money">'+money(o.amount,o.currency)+(debtFor(o)>0?' <small>қолдиқ '+money(debtFor(o),o.currency)+'</small>':(o.status!=="cancelled"?' <small>тўлиқ тўланган ✓</small>':""))+'</div>':"")+'</div>';
 }
 function jobCard(j){
  const o=orders.find(x=>x.id===j.order_id)||{},c=customerMap.get(o.customer_id)||{};
- return '<div class="item" data-job="'+esc(j.id)+'"><div class="itemtop"><h4>'+esc(j.title)+'</h4><span class="pill">'+esc(jobStatus[j.status]||j.status)+'</span></div><div class="meta">'+esc(fmtDT(j.scheduled_at))+'<br>'+esc(j.address||c.address||"Манзил йўқ")+' • '+esc(j.contact_phone||c.phone||"")+(j.assigned_to?'<br>Масъул: '+esc(j.assigned_to===currentUser.id?"Сиз":(staffName(j.assigned_to)||"ходим")):"")+'</div><div class="progress"><span style="width:'+(Number(j.progress)||0)+'%"></span></div></div>';
+ const late=isOverdue(j);
+ return '<div class="item" data-job="'+esc(j.id)+'"><div class="itemtop"><h4>'+esc(j.title)+'</h4><span class="pill'+(late?" warn":"")+'">'+(late?"Кечикди":esc(jobStatus[j.status]||j.status))+'</span></div><div class="meta"><span class="'+(late?"due":"")+'">'+esc(fmtDT(j.scheduled_at))+'</span><br>'+esc(j.address||c.address||"Манзил йўқ")+' • '+esc(j.contact_phone||c.phone||"")+(j.assigned_to?'<br>Масъул: '+esc(staffName(j.assigned_to)||"ходим"):"")+'</div><div class="progress"><span style="width:'+(Number(j.progress)||0)+'%"></span></div></div>';
 }
 function render(){
  const activeOrders=orders.filter(o=>!["completed","cancelled"].includes(o.status));
- const openJobs=jobs.filter(j=>["scheduled","in_progress"].includes(j.status));
- const metrics=canSell()||canFinance()?[["Мижозлар",customers.length],["Янги лидлар",leads.filter(x=>x.status==="new").length],["Фаол буюртмалар",activeOrders.length],["Очиқ вазифалар",openJobs.length]]:[["Менга тайинланган",openJobs.filter(j=>j.assigned_to===currentUser.id).length],["Очиқ вазифалар",openJobs.length]];
+ const openJobs=jobs.filter(openJob);
+ let metrics;
+ if(canSell()||canFinance())metrics=[["Мижозлар",customers.length],[canSell()?"Янги лидлар":"Қарздорлар",canSell()?leads.filter(x=>x.status==="new").length:orders.filter(o=>debtFor(o)>0).length],["Фаол буюртмалар",activeOrders.length],["Очиқ вазифалар",openJobs.length]];
+ else if(isProd())metrics=[["Тасдиқланган",orders.filter(o=>o.status==="confirmed").length],["Ишлаб чиқаришда",orders.filter(o=>o.status==="production").length]];
+ else metrics=[["Менга тайинланган",openJobs.filter(j=>j.assigned_to===currentUser.id).length],["Очиқ вазифалар",openJobs.length]];
  $("homeMetrics").innerHTML=metrics.map(x=>'<div class="card"><div class="muted">'+x[0]+'</div><div class="metric">'+x[1]+'</div></div>').join("");
- $("flow").innerHTML=Object.keys(leadStatus).map(s=>'<div class="stage"><b>'+leadStatus[s]+'</b><div class="n">'+leads.filter(x=>x.status===s).length+'</div><div class="muted">та лид</div></div>').join("");
+ $("flow").innerHTML=Object.keys(leadStatus).map(s=>'<div class="stage" style="cursor:pointer" onclick="$(\'leadF\').value=\''+s+'\';renderLeads();go(\'leads\')"><b>'+leadStatus[s]+'</b><div class="n">'+leads.filter(x=>x.status===s).length+'</div><div class="muted">та лид</div></div>').join("");
  const today=new Date().toDateString();
+ const overdue=openJobs.filter(isOverdue);
+ $("overdueWrap").classList.toggle("hide",!overdue.length);$("overdueList").innerHTML=overdue.map(jobCard).join("");
  const todays=openJobs.filter(j=>j.scheduled_at&&new Date(j.scheduled_at).toDateString()===today);
  $("todayList").innerHTML=todays.map(jobCard).join("")||'<div class="empty">Бугунга режалаштирилган ўлчов ёки монтаж йўқ.'+(canSell()?' Вазифани буюртма ичидан белгиланг.':'')+'</div>';
+ const calls=canSell()?leads.filter(leadDue).sort((a,b)=>new Date(a.next_contact_at)-new Date(b.next_contact_at)):[];
+ $("callWrap").classList.toggle("hide",!calls.length);$("callList").innerHTML=calls.map(leadCard).join("");
+ if(isProd())$("prodList").innerHTML=orders.filter(o=>["confirmed","production"].includes(o.status)).map(orderCard).join("")||'<div class="empty">Ҳозир ишлаб чиқаришга буюртма йўқ.</div>';
  const month=todayISO().slice(0,7),inMonth={},debt={},debtors=[];
  payments.filter(p=>String(p.paid_at).slice(0,7)===month).forEach(p=>{inMonth[p.currency]=(inMonth[p.currency]||0)+(p.kind==="refund"?-1:1)*Number(p.amount)});
  orders.forEach(o=>{const d=debtFor(o);if(d>0){debt[o.currency]=(debt[o.currency]||0)+d;debtors.push(o)}});
+ debtors.sort((a,b)=>debtFor(b)-debtFor(a));
  const pipe=leads.filter(l=>!["won","lost"].includes(l.status)).reduce((a,l)=>a+(Number(l.estimated_amount)||0),0);
  const rowsOf=(label,obj)=>Object.keys(obj).length?Object.keys(obj).map(k=>'<div class="kpirow"><span>'+label+'</span><b>'+money(obj[k],k)+'</b></div>').join(""):'<div class="kpirow"><span>'+label+'</span><b>'+money(0)+'</b></div>';
- $("moneyBrief").innerHTML=rowsOf("Шу ой тушум",inMonth)+rowsOf("Мижозлар қарзи",debt)+'<div class="kpirow"><span>Очиқ лидлар (тахминан)</span><b>'+money(pipe)+'</b></div>'+
+ $("moneyBrief").innerHTML=rowsOf("Шу ой тушум",inMonth)+rowsOf("Мижозлар қарзи",debt)+(canSell()?'<div class="kpirow"><span>Очиқ лидлар (тахминан)</span><b>'+money(pipe)+'</b></div>':"")+
   (debtors.length?'<div class="sub2">Қарздорлар</div>'+debtors.slice(0,5).map(o=>{const c=customerMap.get(o.customer_id)||{};return '<div class="kpirow" data-order="'+esc(o.id)+'" style="cursor:pointer"><span>'+esc(c.name||o.title)+' • '+esc(o.reference_code||"")+'</span><b>'+money(debtFor(o),o.currency)+'</b></div>'}).join(""):"");
- $("leadList").innerHTML=leads.map(leadCard).join("")||'<div class="empty">Ҳали лид йўқ. Юқоридаги шакл орқали биринчи мижозни қўшинг.</div>';
- $("orderList").innerHTML=orders.map(orderCard).join("")||'<div class="empty">Ҳали буюртма йўқ. Лидни очиб, «Буюртма яратиш» тугмасини босинг.</div>';
- const byKind=k=>jobs.filter(j=>j.kind===k).sort((a,b)=>(a.status==="completed"||a.status==="cancelled")-(b.status==="completed"||b.status==="cancelled"));
- $("measureList").innerHTML=byKind("measurement").map(jobCard).join("")||'<div class="empty">Ўлчов вазифалари йўқ. Буюртмани очиб, «Ўлчов белгилаш» ни босинг.</div>';
+ renderLeads();renderOrders();renderWork();renderStaff();
+ if(!$("reportsWrap").classList.contains("hide"))renderReports();
+}
+function renderLeads(){
+ const q=val("leadQ"),f=$("leadF").value;
+ const list=leads.filter(l=>{const c=customerMap.get(l.customer_id)||{};
+  if(f==="open"&&["won","lost"].includes(l.status))return false;
+  if(f==="due"&&!leadDue(l))return false;
+  if(f&&leadStatus[f]&&l.status!==f)return false;
+  return textMatch(q,c.name,c.phone,c.address,l.title,l.source,l.notes)});
+ $("leadCount").textContent=list.length!==leads.length?"("+list.length+" / "+leads.length+")":leads.length?"("+leads.length+")":"";
+ $("leadList").innerHTML=list.map(leadCard).join("")||(leads.length?'<div class="empty">Қидирув бўйича лид топилмади.</div>':'<div class="empty">Ҳали лид йўқ. Юқоридаги шакл орқали биринчи мижозни қўшинг.</div>');
+}
+function renderOrders(){
+ const q=val("orderQ"),f=$("orderF").value;
+ const list=orders.filter(o=>{const c=customerMap.get(o.customer_id)||{};
+  if(f==="active"&&["completed","cancelled"].includes(o.status))return false;
+  if(f==="debt"&&!(debtFor(o)>0))return false;
+  if(f&&orderStatus[f]&&o.status!==f)return false;
+  return textMatch(q,o.reference_code,c.name,c.phone,c.address,o.title,o.description)});
+ $("orderCount").textContent=list.length!==orders.length?"("+list.length+" / "+orders.length+")":orders.length?"("+orders.length+")":"";
+ $("orderList").innerHTML=list.map(orderCard).join("")||(orders.length?'<div class="empty">Қидирув бўйича буюртма топилмади.</div>':'<div class="empty">Ҳали буюртма йўқ.'+(canSell()?' Лидни очиб, «Буюртма яратиш» тугмасини босинг.':'')+'</div>');
+}
+function renderWork(){
+ const q=val("workQ"),f=$("workF").value;
+ const pass=j=>{const o=orders.find(x=>x.id===j.order_id)||{},c=customerMap.get(o.customer_id)||{};
+  if(f==="open"&&!openJob(j))return false;if(f==="mine"&&!(j.assigned_to===currentUser.id&&openJob(j)))return false;if(f==="overdue"&&!isOverdue(j))return false;
+  return textMatch(q,j.title,j.address,j.contact_phone,c.name,o.reference_code)};
+ const byKind=k=>jobs.filter(j=>j.kind===k&&pass(j)).sort((a,b)=>(!openJob(a))-(!openJob(b)));
+ $("measureList").innerHTML=byKind("measurement").map(jobCard).join("")||'<div class="empty">Ўлчов вазифалари йўқ.'+(canSell()&&!q?' Буюртмани очиб, «+ Ўлчов» ни босинг.':'')+'</div>';
  $("installList").innerHTML=byKind("installation").map(jobCard).join("")||'<div class="empty">Монтаж вазифалари йўқ.</div>';
- renderStaff();
 }
 document.addEventListener("click",e=>{
  const t=e.target.closest("[data-lead],[data-order],[data-job],[data-staff]");
- if(!t||t.closest(".sheet"))return;
+ if(!t)return;
+ if(t.closest(".sheet")&&!t.dataset.inSheet)return;
  if(t.dataset.lead)openLead(t.dataset.lead);
  else if(t.dataset.order)openOrder(t.dataset.order);
- else if(t.dataset.job)openJob(t.dataset.job);
+ else if(t.dataset.job)openJob2(t.dataset.job);
  else if(t.dataset.staff)openStaff(t.dataset.staff);
 });
-function openSheet(title,html){$("sheet").innerHTML='<div class="sheethead"><h3>'+esc(title)+'</h3><button class="close" onclick="closeSheet()" aria-label="Ёпиш">✕</button></div>'+html;$("sheetBg").classList.add("open");document.body.style.overflow="hidden"}
-function closeSheet(){$("sheetBg").classList.remove("open");document.body.style.overflow=""}
-function busy(btn,text){const old=btn.textContent;btn.disabled=true;btn.textContent=text;return()=>{btn.disabled=false;btn.textContent=old}}
+const inSheet=html=>html.replaceAll('<div class="item" data-','<div class="item" data-in-sheet="1" data-');
+function openSheet(title,html){const sh=$("sheet");sh.dataset.kind="";sh.dataset.id="";sh.innerHTML='<div class="sheethead"><h3>'+esc(title)+'</h3><button class="close" onclick="closeSheet()" aria-label="Ёпиш">✕</button></div>'+html;$("sheetBg").classList.add("open");document.body.style.overflow="hidden";$("sheet").scrollTop=0}
+function closeSheet(force){if(recovery&&!force)return toast("Аввал янги парол ўрнатинг.");$("sheetBg").classList.remove("open");document.body.style.overflow=""}
+function busy(btn,text){if(!btn)return()=>{};const old=btn.textContent;btn.disabled=true;btn.textContent=text;return()=>{btn.disabled=false;btn.textContent=old}}
+
+/* ---------- Мижоз ---------- */
+function contactLinks(phone,telegram){
+ const l=[];
+ if(phone){l.push('<a href="'+esc(telHref(phone))+'">📞 Қўнғироқ</a>');if(waNum(phone).length>=11)l.push('<a href="https://wa.me/'+esc(waNum(phone))+'" target="_blank" rel="noopener">WhatsApp</a>')}
+ if(telegram){const t=String(telegram).trim().replace(/^@/,"").replace(/^https?:\/\/t\.me\//,"");if(/^[A-Za-z0-9_]{4,}$/.test(t))l.push('<a href="https://t.me/'+esc(t)+'" target="_blank" rel="noopener">Telegram</a>')}
+ return l.length?'<div class="links">'+l.join("")+'</div>':"";
+}
+function customerBlock(c){
+ if(!c.id)return"";
+ if(!canSell())return contactLinks(c.phone,c.telegram);
+ return contactLinks(c.phone,c.telegram)+'<details style="margin-top:10px"><summary class="muted" style="cursor:pointer;font-weight:800">✎ Мижоз маълумотларини таҳрирлаш</summary><div class="card" style="margin-top:8px">'+
+  '<label>Исм / компания</label><input id="cName" value="'+esc(c.name)+'">'+
+  '<div class="row"><div><label>Телефон</label><input id="cPhone" type="tel" value="'+esc(c.phone)+'"></div><div><label>Telegram</label><input id="cTg" placeholder="@username" value="'+esc(c.telegram)+'"></div></div>'+
+  '<label>Манзил</label><input id="cAddr" value="'+esc(c.address)+'">'+
+  '<label>Мижоз ҳақида</label><textarea id="cNotes" style="min-height:60px">'+esc(c.notes)+'</textarea>'+
+  '<button class="btn primary" onclick="saveCustomer(\''+esc(c.id)+'\',this)">Мижозни сақлаш</button></div></details>';
+}
+function findCustomerByPhone(phone,exceptId){const k=phoneKey(phone);if(k.length<7)return null;return customers.find(c=>c.id!==exceptId&&phoneKey(c.phone)===k)||null}
+function phoneHint(){const d=findCustomerByPhone(val("leadPhone"));$("leadPhoneHint").textContent=d?"Бу рақам мавжуд мижозга тегишли: "+d.name:""}
+async function saveCustomer(id,btn){
+ const name=val("cName");if(!name)return alert("Мижоз номини киритинг.");
+ const phone=val("cPhone"),d=findCustomerByPhone(phone,id);
+ if(d&&!confirm("Бу телефон рақам «"+d.name+"» мижозида ҳам бор. Барибир сақлайликми?"))return;
+ const done=busy(btn,"Сақланмоқда…");
+ const {error}=await sb.from("crm_customers").update({name,phone:phone||null,telegram:val("cTg")||null,address:val("cAddr")||null,notes:val("cNotes")||null}).eq("id",id).eq("company_id",companyId);
+ done();if(error)return reportError("Мижозни сақлашда хатолик",error);
+ await reload();toast("Мижоз маълумотлари сақланди ✓");
+ const t=$("sheet").dataset;if(t.kind==="lead")openLead(t.id);else if(t.kind==="order")openOrder(t.id);
+}
+
+/* ---------- Изоҳлар тарихи ---------- */
+function notesBlock(type,id){
+ if(!feat.notes)return"";
+ const list=notes.filter(n=>n.entity_type===type&&n.entity_id===id);
+ return '<div class="sub2">Алоқалар тарихи</div>'+
+  '<textarea id="noteBody" style="min-height:60px" placeholder="Масалан: қўнғироқ қилдим, ўйлаб кўраман деди…"></textarea>'+
+  '<button class="btn soft" style="margin-top:6px" onclick="addNote(\''+type+'\',\''+esc(id)+'\',this)">+ Ёзув қўшиш</button>'+
+  (list.map(n=>'<div class="note"><small><span>'+esc(fmtDT(n.created_at))+(staffName(n.created_by)?" • "+esc(staffName(n.created_by)):"")+'</span>'+(isManager()||n.created_by===currentUser.id?'<button aria-label="Ўчириш" onclick="deleteNote(\''+esc(n.id)+'\',\''+type+'\',\''+esc(id)+'\')">✕</button>':"")+'</small>'+esc(n.body)+'</div>').join("")||'<div class="empty">Ҳали ёзув йўқ.</div>');
+}
+async function addNote(type,id,btn){
+ const body=val("noteBody");if(!body)return alert("Ёзув матнини киритинг.");
+ const done=busy(btn,"Сақланмоқда…");
+ const {error}=await sb.from("crm_notes").insert({company_id:companyId,entity_type:type,entity_id:id,body,created_by:currentUser.id});
+ done();if(error)return reportError("Ёзувни сақлашда хатолик",error);
+ await reload();type==="lead"?openLead(id):openOrder(id);
+}
+async function deleteNote(nid,type,id){
+ if(!confirm("Бу ёзувни ўчирайликми?"))return;
+ const {error}=await sb.from("crm_notes").delete().eq("id",nid).eq("company_id",companyId);
+ if(error)return reportError("Ёзувни ўчиришда хатолик",error);
+ await reload();type==="lead"?openLead(id):openOrder(id);
+}
 
 /* ---------- Лид ---------- */
 function openLead(id){
@@ -402,26 +679,46 @@ function openLead(id){
  const c=customerMap.get(l.customer_id)||{};
  const linked=orders.filter(o=>o.lead_id===id);
  openSheet(c.name||l.title,
-  '<div class="meta">'+(c.phone?'<a class="tel" href="tel:'+esc(c.phone.replace(/[^\d+]/g,""))+'">'+esc(c.phone)+'</a><br>':"")+esc(l.source||"")+' • '+esc(l.title)+(c.address?" • "+esc(c.address):"")+'<br>'+fmtDate(l.created_at)+'</div>'+
-  '<label>Ҳолати</label><select id="lStatus">'+opts(leadStatus,l.status)+'</select>'+
-  '<label>Тахминий сумма (сўм)</label><input id="lAmount" type="number" inputmode="numeric" min="0" value="'+esc(l.estimated_amount??"")+'">'+
+  '<div class="meta">'+(c.phone?'<a class="tel" href="'+esc(telHref(c.phone))+'">'+esc(c.phone)+'</a><br>':"")+esc(l.source||"")+' • '+esc(l.title)+(c.address?" • "+esc(c.address):"")+'<br>Қўшилган: '+fmtDate(l.created_at)+(staffName(l.created_by)?" • "+esc(staffName(l.created_by)):"")+'</div>'+
+  customerBlock(c)+
+  '<div class="row"><div><label>Ҳолати</label><select id="lStatus">'+opts(leadStatus,l.status)+'</select></div><div><label>Маҳсулот</label><select id="lTitle">'+listOpts(products(),l.title)+'</select></div></div>'+
+  '<div class="row"><div><label>Тахминий сумма (сўм)</label><input id="lAmount" type="number" inputmode="numeric" min="0" value="'+esc(l.estimated_amount??"")+'"></div><div><label>Манба</label><select id="lSource">'+listOpts(sources(),l.source)+'</select></div></div>'+
+  (feat.next?'<label>Кейинги алоқа (эслатма)</label><input id="lNext" type="datetime-local" value="'+toLocalInput(l.next_contact_at)+'"><div class="links"><a href="#" onclick="setNext(1);return false">Эртага</a><a href="#" onclick="setNext(3);return false">3 кундан сўнг</a><a href="#" onclick="setNext(7);return false">1 ҳафтадан сўнг</a><a href="#" onclick="$(\'lNext\').value=\'\';return false">Тозалаш</a></div>':"")+
   '<label>Изоҳ</label><textarea id="lNotes">'+esc(l.notes)+'</textarea>'+
   '<button class="btn primary" onclick="saveLead(\''+esc(id)+'\',this)">Сақлаш</button>'+
+  notesBlock("lead",id)+
   '<div class="sub2">AI ёрдамчи</div><div class="meta">Мижоз исми ва телефони AI’га юборилмайди. Хабар автоматик юборилмайди.</div>'+
   '<button class="btn gold" onclick="aiLead(\''+esc(id)+'\',this)">Жавоб таклифини олиш</button><div id="aiOut"></div>'+
   '<div class="sub2">Буюртма</div>'+
-  (linked.length?linked.map(orderCard).join("").replaceAll('data-order=','onclick="openOrder(this.dataset.order)" data-order='):"")+
-  '<button class="btn soft" onclick="showOrderForm(\''+esc(id)+'\',this)">'+(linked.length?"Яна буюртма яратиш":"Буюртма яратиш")+'</button><div id="orderForm"></div>'
+  inSheet(linked.map(orderCard).join(""))+
+  '<button class="btn soft" onclick="showOrderForm(\''+esc(id)+'\',this)">'+(linked.length?"Яна буюртма яратиш":"Буюртма яратиш")+'</button><div id="orderForm"></div>'+
+  (isManager()?'<button class="btn red" style="margin-top:22px" onclick="deleteLead(\''+esc(id)+'\',this)">Лидни ўчириш</button>':"")
  );
+ Object.assign($("sheet").dataset,{kind:"lead",id});
 }
+function setNext(days){const d=new Date();d.setDate(d.getDate()+days);d.setHours(10,0,0,0);$("lNext").value=toLocalInput(d.toISOString())}
 async function saveLead(id,btn){
- const done=busy(btn,"Сақланмоқда…");
  const amount=numOrNull(val("lAmount"));
- if(amount!==null&&(isNaN(amount)||amount<0)){done();return alert("Сумма нотўғри.")}
- const {error}=await sb.from("crm_leads").update({status:$("lStatus").value,estimated_amount:amount,notes:val("lNotes")||null}).eq("id",id).eq("company_id",companyId);
+ if(amount!==null&&(isNaN(amount)||amount<0))return alert("Сумма нотўғри.");
+ const patch={status:$("lStatus").value,title:$("lTitle").value,source:$("lSource").value,estimated_amount:amount,notes:val("lNotes")||null};
+ if(feat.next)patch.next_contact_at=fromLocalInput(val("lNext"));
+ const done=busy(btn,"Сақланмоқда…");
+ const {error}=await sb.from("crm_leads").update(patch).eq("id",id).eq("company_id",companyId);
  done();
  if(error)return reportError("Лидни сақлашда хатолик",error);
- await reload();closeSheet();
+ await reload();closeSheet();toast("Лид сақланди ✓");
+}
+async function deleteLead(id,btn){
+ const l=leads.find(x=>x.id===id);if(!l)return;
+ if(orders.some(o=>o.lead_id===id))return alert("Бу лидга буюртма боғланган. Аввал буюртмани ўчиринг ёки лидни «Йўқотилган» деб белгиланг.");
+ if(!confirm("Лид бутунлай ўчирилсинми? Бу амални қайтариб бўлмайди."))return;
+ const done=busy(btn,"Ўчирилмоқда…");
+ if(feat.notes)await sb.from("crm_notes").delete().eq("company_id",companyId).eq("entity_type","lead").eq("entity_id",id);
+ const {error}=await sb.from("crm_leads").delete().eq("id",id).eq("company_id",companyId);
+ if(error){done();return reportError("Лидни ўчиришда хатолик",error)}
+ const cid=l.customer_id;
+ if(cid&&!leads.some(x=>x.id!==id&&x.customer_id===cid)&&!orders.some(o=>o.customer_id===cid))await sb.from("crm_customers").delete().eq("id",cid).eq("company_id",companyId);
+ done();await reload();closeSheet();toast("Лид ўчирилди");
 }
 async function aiLead(id,btn){
  const done=busy(btn,"AI ўйламоқда…");const out=$("aiOut");out.innerHTML="";
@@ -443,8 +740,9 @@ function showOrderForm(leadId,btn){
   '<div class="row"><div><label>Сумма</label><input id="oAmount" type="number" inputmode="numeric" min="0" value="'+esc(l.estimated_amount??"")+'"></div><div><label>Валюта</label><select id="oCur">'+opts({UZS:"сўм",USD:"USD",EUR:"EUR"},"UZS")+'</select></div></div>'+
   '<label>Тавсиф</label><textarea id="oDesc" placeholder="Ўлчам, ранг, материал...">'+esc(l.notes)+'</textarea>'+
   '<button class="btn primary" onclick="createOrder(\''+esc(leadId)+'\',this)">Буюртмани сақлаш</button></div>';
+ $("orderForm").scrollIntoView({behavior:"smooth"});
 }
-function newRef(){const d=new Date();return"LS-"+String(d.getFullYear()).slice(2)+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+Math.floor(100+Math.random()*900)}
+function newRef(){const d=new Date();return"LS-"+String(d.getFullYear()).slice(2)+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+String(Date.now()).slice(-5)}
 async function createOrder(leadId,btn){
  const l=leads.find(x=>x.id===leadId);
  const title=val("oTitle"),amount=numOrNull(val("oAmount"));
@@ -452,63 +750,103 @@ async function createOrder(leadId,btn){
  if(amount!==null&&(isNaN(amount)||amount<0))return alert("Сумма нотўғри.");
  if(!l.customer_id)return alert("Бу лидга мижоз боғланмаган.");
  const done=busy(btn,"Сақланмоқда…");
- const {error}=await sb.from("crm_orders").insert({company_id:companyId,customer_id:l.customer_id,lead_id:leadId,reference_code:newRef(),title,description:val("oDesc")||null,amount,currency:$("oCur").value,status:"new",created_by:currentUser.id});
+ const {data,error}=await sb.from("crm_orders").insert({company_id:companyId,customer_id:l.customer_id,lead_id:leadId,title,description:val("oDesc")||null,amount,currency:$("oCur").value,status:"new",created_by:currentUser.id}).select("id,reference_code").single();
  if(error){done();return reportError("Буюртма яратишда хатолик",error)}
- if(l.status!=="won")await sb.from("crm_leads").update({status:"won"}).eq("id",leadId).eq("company_id",companyId);
- done();await reload();closeSheet();go("orders");
+ if(!data.reference_code){for(let i=0;i<3;i++){const r=await sb.from("crm_orders").update({reference_code:newRef()}).eq("id",data.id).eq("company_id",companyId);if(!r.error)break}}
+ if(l.status!=="won"){const r=await sb.from("crm_leads").update({status:"won"}).eq("id",leadId).eq("company_id",companyId);if(r.error)console.warn(r.error)}
+ done();await reload();closeSheet();go("orders");openOrder(data.id);toast("Буюртма яратилди ✓");
 }
 function openOrder(id){
  const o=orders.find(x=>x.id===id);if(!o)return;
  const c=customerMap.get(o.customer_id)||{};
- const js=jobs.filter(j=>j.order_id===id);
- openSheet((o.reference_code||"Буюртма")+" • "+(c.name||""),
-  '<div class="meta">'+esc(o.title)+'<br>'+(c.phone?'<a class="tel" href="tel:'+esc(c.phone.replace(/[^\d+]/g,""))+'">'+esc(c.phone)+'</a> • ':"")+esc(c.address||"")+'</div>'+
-  '<label>Ҳолати</label><select id="oStatus">'+opts(orderStatus,o.status)+'</select>'+
-  '<div class="row"><div><label>Сумма</label><input id="oAmount2" type="number" inputmode="numeric" min="0" value="'+esc(o.amount??"")+'"></div><div><label>Валюта</label><select id="oCur2">'+opts({UZS:"сўм",USD:"USD",EUR:"EUR"},o.currency)+'</select></div></div>'+
-  '<label>Тавсиф</label><textarea id="oDesc2">'+esc(o.description)+'</textarea>'+
-  '<button class="btn primary" onclick="saveOrder(\''+esc(id)+'\',this)">Сақлаш</button>'+
-  '<div class="sub2">Тўловлар</div>'+payBlock(o)+
-  '<button class="btn soft" onclick="showPayForm(\''+esc(id)+'\',this)">+ Тўлов қўшиш</button><div id="payForm"></div>'+
-  '<div class="sub2">Ўлчов ва монтаж</div>'+
-  (js.map(jobCard).join("").replaceAll('data-job=','onclick="openJob(this.dataset.job)" data-job=')||'<div class="empty">Бу буюртмага ҳали вазифа белгиланмаган.</div>')+
-  '<div class="row"><button class="btn soft" onclick="showJobForm(\''+esc(id)+'\',\'measurement\')">+ Ўлчов</button><button class="btn soft" onclick="showJobForm(\''+esc(id)+'\',\'installation\')">+ Монтаж</button></div><div id="jobForm"></div>'
- );
+ const js=jobs.filter(j=>j.order_id===id&&canJob(j.kind,"view"));
+ const sell=canSell(),fin=canFinance(),prodOnly=isProd()&&!sell;
+ const lead=leads.find(l=>l.id===o.lead_id);
+ let html='<div class="meta">'+esc(o.title)+'<br>'+(c.phone?'<a class="tel" href="'+esc(telHref(c.phone))+'">'+esc(c.phone)+'</a> • ':"")+esc(c.address||"")+'<br>Яратилган: '+fmtDate(o.created_at)+(lead?' • <a class="tel" href="#" onclick="openLead(\''+esc(lead.id)+'\');return false">Лидни очиш</a>':"")+'</div>'+customerBlock(c);
+ if(prodOnly){
+  html+='<label>Ҳолати</label>'+(prodStatus[o.status]?'<select id="oStatus">'+opts(prodStatus,o.status)+'</select><button class="btn primary" onclick="saveOrderStatus(\''+esc(id)+'\',this)">Ҳолатни сақлаш</button>':'<div class="empty">'+esc(orderStatus[o.status])+' — бу босқичда ўзгартириб бўлмайди.</div>')+
+   '<label>Тавсиф</label><div class="note">'+esc(o.description||"—")+'</div>';
+ }else{
+  const dis=sell?"":" disabled";
+  html+='<label>Ҳолати</label><select id="oStatus"'+dis+'>'+opts(orderStatus,o.status)+'</select>'+
+   '<label>Буюртма номи</label><input id="oTitle2" value="'+esc(o.title)+'"'+dis+'>'+
+   '<div class="row"><div><label>Сумма</label><input id="oAmount2" type="number" inputmode="numeric" min="0" value="'+esc(o.amount??"")+'"'+dis+'></div><div><label>Валюта</label><select id="oCur2"'+dis+'>'+opts({UZS:"сўм",USD:"USD",EUR:"EUR"},o.currency)+'</select></div></div>'+
+   '<label>Тавсиф</label><textarea id="oDesc2"'+dis+'>'+esc(o.description)+'</textarea>'+
+   (sell?'<button class="btn primary" onclick="saveOrder(\''+esc(id)+'\',this)">Сақлаш</button>':"");
+  if(sell||fin)html+='<div class="sub2">Тўловлар</div>'+payBlock(o)+'<button class="btn soft" onclick="showPayForm(\''+esc(id)+'\',this)">+ Тўлов қўшиш</button><div id="payForm"></div>';
+ }
+ if(js.length||canJob("measurement","create")||canJob("installation","create")){
+  html+='<div class="sub2">Ўлчов ва монтаж</div>'+(inSheet(js.map(jobCard).join(""))||'<div class="empty">Бу буюртмага ҳали вазифа белгиланмаган.</div>')+
+   '<div class="row">'+(canJob("measurement","create")?'<button class="btn soft" onclick="showJobForm(\''+esc(id)+'\',\'measurement\')">+ Ўлчов</button>':"<div></div>")+(canJob("installation","create")?'<button class="btn soft" onclick="showJobForm(\''+esc(id)+'\',\'installation\')">+ Монтаж</button>':"<div></div>")+'</div><div id="jobForm"></div>';
+ }
+ if(!prodOnly)html+=notesBlock("order",id);
+ if(isManager())html+='<button class="btn red" style="margin-top:22px" onclick="deleteOrder(\''+esc(id)+'\',this)">Буюртмани ўчириш</button>';
+ openSheet((o.reference_code||"Буюртма")+" • "+(c.name||""),html);
+ Object.assign($("sheet").dataset,{kind:"order",id});
 }
 async function saveOrder(id,btn){
- const amount=numOrNull(val("oAmount2"));
+ const amount=numOrNull(val("oAmount2")),title=val("oTitle2");
+ if(!title)return alert("Буюртма номини киритинг.");
  if(amount!==null&&(isNaN(amount)||amount<0))return alert("Сумма нотўғри.");
+ const o=orders.find(x=>x.id===id),status=$("oStatus").value;
+ if(status==="completed"&&debtFor({...o,amount})>0&&!confirm("Бу буюртмада ҳали қарз бор. Барибир «Бажарилган» деб белгилайликми?"))return;
  const done=busy(btn,"Сақланмоқда…");
- const {error}=await sb.from("crm_orders").update({status:$("oStatus").value,amount,currency:$("oCur2").value,description:val("oDesc2")||null}).eq("id",id).eq("company_id",companyId);
+ const {error}=await sb.from("crm_orders").update({status,title,amount,currency:$("oCur2").value,description:val("oDesc2")||null}).eq("id",id).eq("company_id",companyId);
  done();
  if(error)return reportError("Буюртмани сақлашда хатолик",error);
- await reload();closeSheet();
+ await reload();closeSheet();toast("Буюртма сақланди ✓");
+}
+async function saveOrderStatus(id,btn){
+ const done=busy(btn,"Сақланмоқда…");
+ const {error}=await sb.from("crm_orders").update({status:$("oStatus").value}).eq("id",id).eq("company_id",companyId);
+ done();if(error)return reportError("Ҳолатни сақлашда хатолик",error);
+ await reload();closeSheet();toast("Ҳолат сақланди ✓");
+}
+async function deleteOrder(id,btn){
+ if(payments.some(p=>p.order_id===id))return alert("Бу буюртмада тўловлар бор. Аввал тўловларни ўчиринг ёки буюртмани «Бекор қилинган» деб белгиланг.");
+ if(!confirm("Буюртма ва унинг ўлчов/монтаж вазифалари бутунлай ўчирилсинми? Бу амални қайтариб бўлмайди."))return;
+ const done=busy(btn,"Ўчирилмоқда…");
+ for(const j of jobs.filter(x=>x.order_id===id))await removeJobFiles(j.id);
+ let r=await sb.from("crm_jobs").delete().eq("order_id",id).eq("company_id",companyId);
+ if(r.error){done();return reportError("Вазифаларни ўчиришда хатолик",r.error)}
+ if(feat.notes)await sb.from("crm_notes").delete().eq("company_id",companyId).eq("entity_type","order").eq("entity_id",id);
+ r=await sb.from("crm_orders").delete().eq("id",id).eq("company_id",companyId);
+ done();if(r.error)return reportError("Буюртмани ўчиришда хатолик",r.error);
+ await reload();closeSheet();toast("Буюртма ўчирилди");
 }
 
 /* ---------- Тўловлар ---------- */
 function payBlock(o){
  const ps=payments.filter(p=>p.order_id===o.id),paid=paidFor(o);
  const head=o.amount!=null?'<div class="kpirow"><span>Тўланган</span><b>'+money(paid,o.currency)+' / '+money(o.amount,o.currency)+'</b></div><div class="kpirow"><span>Қолдиқ</span><b>'+money(debtFor(o),o.currency)+'</b></div>'+'<div class="progress"><span style="width:'+Math.min(100,o.amount>0?paid/o.amount*100:0)+'%"></span></div>':'<div class="meta">Буюртма суммаси киритилмаган, шунинг учун қолдиқ ҳисобланмайди.</div>';
- return head+(ps.map(p=>'<div class="kpirow"><span>'+fmtDate(p.paid_at)+' • '+payKind[p.kind]+' • '+payMethod[p.method]+(p.note?'<br><small class="muted">'+esc(p.note)+'</small>':"")+'</span><b>'+(p.kind==="refund"?"−":"")+money(p.amount,p.currency)+' <button class="smallbtn" aria-label="Ўчириш" onclick="deletePay(\''+esc(p.id)+'\',\''+esc(o.id)+'\')">✕</button></b></div>').join("")||'<div class="empty">Ҳали тўлов киритилмаган.</div>');
+ return head+(ps.map(p=>'<div class="kpirow"><span>'+fmtDate(p.paid_at)+' • '+payKind[p.kind]+' • '+payMethod[p.method]+(p.note?'<br><small class="muted">'+esc(p.note)+'</small>':"")+'</span><b style="white-space:nowrap">'+(p.kind==="refund"?"−":"")+money(p.amount,p.currency)+
+  (canFinance()?' <button class="smallbtn" aria-label="Таҳрирлаш" onclick="showPayForm(\''+esc(o.id)+'\',null,\''+esc(p.id)+'\')">✎</button>':"")+
+  (isManager()?' <button class="smallbtn" aria-label="Ўчириш" onclick="deletePay(\''+esc(p.id)+'\',\''+esc(o.id)+'\')">✕</button>':"")+'</b></div>').join("")||'<div class="empty">Ҳали тўлов киритилмаган.</div>');
 }
-function showPayForm(orderId,btn){
- const o=orders.find(x=>x.id===orderId);btn.style.display="none";
+function showPayForm(orderId,btn,payId){
+ const o=orders.find(x=>x.id===orderId);if(btn)btn.style.display="none";
+ const p=payId?payments.find(x=>x.id===payId):null;
  const debt=debtFor(o);
- $("payForm").innerHTML='<div class="card" style="margin-top:10px">'+
-  '<div class="row"><div><label>Тури</label><select id="pKind">'+opts(payKind,paidFor(o)>0?"payment":"prepayment")+'</select></div><div><label>Усули</label><select id="pMethod">'+opts(payMethod,"cash")+'</select></div></div>'+
-  '<div class="row"><div><label>Сумма ('+esc(curLabel[o.currency]||o.currency)+')</label><input id="pAmount" type="number" inputmode="numeric" min="0" value="'+(debt>0?debt:"")+'"></div><div><label>Сана</label><input id="pDate" type="date" value="'+todayISO()+'"></div></div>'+
-  '<label>Изоҳ</label><input id="pNote" placeholder="Масалан: чек рақами">'+
-  '<button class="btn primary" onclick="createPay(\''+esc(orderId)+'\',this)">Тўловни сақлаш</button></div>';
+ $("payForm").innerHTML='<div class="card" style="margin-top:10px"><h3>'+(p?"Тўловни таҳрирлаш":"Янги тўлов")+'</h3>'+
+  '<div class="row"><div><label>Тури</label><select id="pKind">'+opts(payKind,p?p.kind:(paidFor(o)>0?"payment":"prepayment"))+'</select></div><div><label>Усули</label><select id="pMethod">'+opts(payMethod,p?p.method:"cash")+'</select></div></div>'+
+  '<div class="row"><div><label>Сумма ('+esc(curLabel[o.currency]||o.currency)+')</label><input id="pAmount" type="number" inputmode="numeric" min="0" value="'+(p?esc(p.amount):(debt>0?debt:""))+'"></div><div><label>Сана</label><input id="pDate" type="date" value="'+(p?esc(p.paid_at):todayISO())+'"></div></div>'+
+  '<label>Изоҳ</label><input id="pNote" placeholder="Масалан: чек рақами" value="'+(p?esc(p.note):"")+'">'+
+  '<button class="btn primary" onclick="createPay(\''+esc(orderId)+'\',this,'+(p?"'"+esc(p.id)+"'":"null")+')">Тўловни сақлаш</button></div>';
  $("payForm").scrollIntoView({behavior:"smooth"});
 }
-async function createPay(orderId,btn){
+async function createPay(orderId,btn,payId){
  const o=orders.find(x=>x.id===orderId);
- const amount=Number(val("pAmount"));
+ const amount=Number(val("pAmount")),kind=$("pKind").value;
  if(!amount||amount<=0)return alert("Тўлов суммасини киритинг.");
+ const other=payments.filter(p=>p.order_id===orderId&&p.id!==payId).reduce((a,p)=>a+(p.kind==="refund"?-1:1)*Number(p.amount),0);
+ if(kind!=="refund"&&o.amount!=null&&other+amount>Number(o.amount)&&!confirm("Тўловлар жами буюртма суммасидан ошиб кетади ("+money(other+amount,o.currency)+" / "+money(o.amount,o.currency)+"). Барибир сақлайликми?"))return;
  const done=busy(btn,"Сақланмоқда…");
- const {error}=await sb.from("crm_payments").insert({company_id:companyId,order_id:orderId,kind:$("pKind").value,method:$("pMethod").value,amount,currency:o.currency,paid_at:val("pDate")||todayISO(),note:val("pNote")||null,created_by:currentUser.id});
+ const row={kind,method:$("pMethod").value,amount,paid_at:val("pDate")||todayISO(),note:val("pNote")||null};
+ const {error}=payId?await sb.from("crm_payments").update(row).eq("id",payId).eq("company_id",companyId)
+  :await sb.from("crm_payments").insert({...row,company_id:companyId,order_id:orderId,currency:o.currency,created_by:currentUser.id});
  done();
  if(error)return reportError("Тўловни сақлашда хатолик",error);
- await reload();openOrder(orderId);
+ await reload();openOrder(orderId);toast("Тўлов сақланди ✓");
 }
 async function deletePay(id,orderId){
  if(!confirm("Бу тўловни ўчирайликми?"))return;
@@ -518,7 +856,7 @@ async function deletePay(id,orderId){
 }
 
 /* ---------- Вазифалар ---------- */
-function assignSelect(id,cur){if(!isManager()||!staff.length)return"";const o={"":"— Тайинланмаган —"};staff.filter(m=>!m.is_me).forEach(m=>o[m.user_id]=m.email+" ("+roleName[m.role]+")");return '<label>Масъул ходим</label><select id="'+id+'">'+opts(o,cur||"")+'</select>'}
+function assignSelect(id,cur){if(!isManager()||!staff.length)return"";const o={"":"— Тайинланмаган —"};staff.forEach(m=>o[m.user_id]=(m.is_me?"Мен":m.email)+" ("+roleName[m.role]+")");return '<label>Масъул ходим</label><select id="'+id+'">'+opts(o,cur||"")+'</select>'}
 function showJobForm(orderId,kind){
  const o=orders.find(x=>x.id===orderId),c=customerMap.get(o.customer_id)||{};
  $("jobForm").innerHTML='<div class="card" style="margin-top:10px"><h3>'+jobKind[kind]+' белгилаш</h3>'+
@@ -530,56 +868,175 @@ function showJobForm(orderId,kind){
   '<button class="btn primary" onclick="createJob(\''+esc(orderId)+'\',\''+kind+'\',this)">Вазифани сақлаш</button></div>';
  $("jobForm").scrollIntoView({behavior:"smooth"});
 }
+function clashWarning(when,assignee,exceptId){
+ if(!when||!assignee)return"";const t=new Date(when).getTime();
+ const c=jobs.find(j=>j.id!==exceptId&&j.assigned_to===assignee&&openJob(j)&&j.scheduled_at&&Math.abs(new Date(j.scheduled_at).getTime()-t)<2*3600000);
+ return c?"Бу ходимда шу вақтга яқин бошқа вазифа бор: «"+c.title+"» ("+fmtDT(c.scheduled_at)+"). Барибир сақлайликми?":"";
+}
 async function createJob(orderId,kind,btn){
  const title=val("jTitle");if(!title)return alert("Вазифа номини киритинг.");
- const when=val("jWhen");
+ const when=val("jWhen"),assignee=$("jAssign")?$("jAssign").value||null:null;
+ const w=clashWarning(when,assignee);if(w&&!confirm(w))return;
  const done=busy(btn,"Сақланмоқда…");
- const {error}=await sb.from("crm_jobs").insert({company_id:companyId,order_id:orderId,kind,title,scheduled_at:when?new Date(when).toISOString():null,address:val("jAddr")||null,contact_phone:val("jPhone")||null,notes:val("jNotes")||null,status:"scheduled",progress:0,created_by:currentUser.id,...($("jAssign")?{assigned_to:$("jAssign").value||null}:{})});
+ const {error}=await sb.from("crm_jobs").insert({company_id:companyId,order_id:orderId,kind,title,scheduled_at:fromLocalInput(when),address:val("jAddr")||null,contact_phone:val("jPhone")||null,notes:val("jNotes")||null,status:"scheduled",progress:0,created_by:currentUser.id,...($("jAssign")?{assigned_to:assignee}:{})});
  if(error){done();return reportError("Вазифа яратишда хатолик",error)}
  const o=orders.find(x=>x.id===orderId);
- if(o&&["new","quotation","confirmed","production"].includes(o.status)){
+ if(o&&canSell()&&["new","quotation","confirmed","production"].includes(o.status)){
   const next=kind==="measurement"?(o.status==="new"?"measurement":null):"installation";
   if(next)await sb.from("crm_orders").update({status:next}).eq("id",orderId).eq("company_id",companyId);
  }
- done();await reload();openOrder(orderId);
+ done();await reload();openOrder(orderId);toast(jobKind[kind]+" белгиланди ✓");
 }
-function openJob(id){
+function openJob2(id){
  const j=jobs.find(x=>x.id===id);if(!j)return;
  const o=orders.find(x=>x.id===j.order_id)||{},c=customerMap.get(o.customer_id)||{};
- const phone=j.contact_phone||c.phone;
+ const phone=j.contact_phone||c.phone,addr=j.address||c.address;
+ const canEdit=canJob(j.kind,"edit"),canRes=canEdit||canJob(j.kind,"submit");
+ const stOpts={};Object.keys(jobStatus).forEach(s=>{const need=s==="cancelled"?"cancel":(s==="scheduled"?"edit":"submit");if(s===j.status||canJob(j.kind,need))stOpts[s]=jobStatus[s]});
  openSheet(j.title,
-  '<div class="meta">'+esc(jobKind[j.kind])+' • '+esc(o.reference_code||"")+'<br>'+esc(j.address||c.address||"Манзил йўқ")+(phone?'<br><a class="tel" href="tel:'+esc(phone.replace(/[^\d+]/g,""))+'">'+esc(phone)+'</a>':"")+(j.notes?'<br>'+esc(j.notes):"")+'</div>'+
-  '<label>Сана ва вақт</label><input id="jWhen2" type="datetime-local" value="'+toLocalInput(j.scheduled_at)+'"'+(canJob(j.kind,"edit")?"":" disabled")+'>'+assignSelect("jAssign2",j.assigned_to)+
-  '<label>Ҳолати</label><select id="jStatus">'+opts(jobStatus,j.status)+'</select>'+
-  '<label>Бажарилиши: <b id="jPv">'+(j.progress||0)+'</b>%</label><input id="jProg" type="range" min="0" max="100" step="10" value="'+(j.progress||0)+'" oninput="$(\'jPv\').textContent=this.value">'+
-  (j.kind==="measurement"?'<div class="row"><div><label>Эни (см)</label><input id="jW" type="number" inputmode="decimal" min="0" value="'+esc(j.width_cm??"")+'"></div><div><label>Чиқиши (см)</label><input id="jP" type="number" inputmode="decimal" min="0" value="'+esc(j.projection_cm??"")+'"></div></div>':"")+
-  '<label>Натижа / изоҳ</label><textarea id="jResult" placeholder="Нима қилинди, нима қолди...">'+esc(j.result_notes)+'</textarea>'+
-  '<button class="btn primary" onclick="saveJob(\''+esc(id)+'\',this)">Сақлаш</button>'
+  '<div class="meta">'+esc(jobKind[j.kind])+(o.reference_code?' • '+esc(o.reference_code):"")+(c.name?' • '+esc(c.name):"")+'<br>'+esc(addr||"Манзил йўқ")+(phone?'<br><a class="tel" href="'+esc(telHref(phone))+'">'+esc(phone)+'</a>':"")+(j.notes?'<br>'+esc(j.notes):"")+'</div>'+
+  '<div class="links">'+(phone?'<a href="'+esc(telHref(phone))+'">📞 Қўнғироқ</a>':"")+(addr?'<a href="https://yandex.uz/maps/?text='+encodeURIComponent(addr)+'" target="_blank" rel="noopener">🗺 Яндекс харита</a><a href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(addr)+'" target="_blank" rel="noopener">Google Maps</a>':"")+'</div>'+
+  '<label>Сана ва вақт</label><input id="jWhen2" type="datetime-local" value="'+toLocalInput(j.scheduled_at)+'"'+(canEdit?"":" disabled")+'>'+assignSelect("jAssign2",j.assigned_to)+
+  '<label>Ҳолати</label><select id="jStatus">'+opts(stOpts,j.status)+'</select>'+
+  '<label>Бажарилиши: <b id="jPv">'+(j.progress||0)+'</b>%</label><input id="jProg" type="range" min="0" max="100" step="10" value="'+(j.progress||0)+'" oninput="$(\'jPv\').textContent=this.value"'+(canRes?"":" disabled")+'>'+
+  (j.kind==="measurement"?'<div class="row"><div><label>Эни (см)</label><input id="jW" type="number" inputmode="decimal" min="0" value="'+esc(j.width_cm??"")+'"'+(canRes?"":" disabled")+'></div><div><label>Чиқиши (см)</label><input id="jP" type="number" inputmode="decimal" min="0" value="'+esc(j.projection_cm??"")+'"'+(canRes?"":" disabled")+'></div></div>'+(j.width_cm&&j.projection_cm?'<div class="meta">Майдон: '+(j.width_cm*j.projection_cm/10000).toFixed(2)+' м²</div>':""):"")+
+  '<label>Натижа / изоҳ</label><textarea id="jResult" placeholder="Нима қилинди, нима қолди..."'+(canRes?"":" disabled")+'>'+esc(j.result_notes)+'</textarea>'+
+  '<button class="btn primary" onclick="saveJob(\''+esc(id)+'\',this)">Сақлаш</button>'+
+  '<div class="sub2">Расмлар</div><div id="jPhotos" class="photos"></div><div id="jPhotoMsg" class="meta">Юкланмоқда…</div>'+
+  '<label class="btn soft" style="text-align:center;color:var(--ink);font-size:15px">📷 Расм қўшиш<input type="file" accept="image/*" multiple style="display:none" onchange="uploadPhotos(\''+esc(id)+'\',this)"></label>'+
+  (isManager()?'<button class="btn red" style="margin-top:22px" onclick="deleteJob(\''+esc(id)+'\',this)">Вазифани ўчириш</button>':"")
  );
+ Object.assign($("sheet").dataset,{kind:"job",id});
+ loadPhotos(id);
 }
 async function saveJob(id,btn){
  const j=jobs.find(x=>x.id===id);
  const status=$("jStatus").value;let progress=Number($("jProg").value);
  if(status==="completed")progress=100;
  const when=val("jWhen2");
- const patch={status,progress,result_notes:val("jResult")||null};
- if(canJob(j.kind,"edit"))patch.scheduled_at=when?new Date(when).toISOString():null;
+ const patch={status};
+ if(canJob(j.kind,"edit")||canJob(j.kind,"submit")){patch.progress=progress;patch.result_notes=val("jResult")||null}
+ if(canJob(j.kind,"edit"))patch.scheduled_at=fromLocalInput(when);
  if($("jAssign2"))patch.assigned_to=$("jAssign2").value||null;
- if(j.kind==="measurement"){
+ if(j.kind==="measurement"&&$("jW")&&!$("jW").disabled){
   const w=numOrNull(val("jW")),p=numOrNull(val("jP"));
   if([w,p].some(x=>x!==null&&(isNaN(x)||x<0)))return alert("Ўлчам нотўғри.");
   patch.width_cm=w;patch.projection_cm=p;
  }
+ const wn=clashWarning(patch.scheduled_at??j.scheduled_at,patch.assigned_to??j.assigned_to,id);
+ const tm=d=>d?new Date(d).getTime():0;
+ const moved=("scheduled_at" in patch&&tm(patch.scheduled_at)!==tm(j.scheduled_at))||("assigned_to" in patch&&patch.assigned_to!==j.assigned_to);
+ if(wn&&moved&&!confirm(wn))return;
  const done=busy(btn,"Сақланмоқда…");
  const {error}=await sb.from("crm_jobs").update(patch).eq("id",id).eq("company_id",companyId);
  done();
  if(error)return reportError("Вазифани сақлашда хатолик",error);
  if(j.kind==="installation"&&status==="completed"&&canSell()){
   const o=orders.find(x=>x.id===j.order_id);
-  if(o&&o.status!=="completed"&&confirm("Монтаж бажарилди. Буюртмани ҳам «Бажарилган» деб белгилайликми?"))
+  if(o&&o.status!=="completed"&&confirm("Монтаж бажарилди. Буюртмани ҳам «Бажарилган» деб белгилайликми?"+(debtFor(o)>0?"\n\nДиққат: мижознинг "+money(debtFor(o),o.currency)+" қарзи бор.":"")))
    await sb.from("crm_orders").update({status:"completed"}).eq("id",o.id).eq("company_id",companyId);
  }
- await reload();closeSheet();
+ if(j.kind==="measurement"&&status==="completed"&&canSell()){
+  const o=orders.find(x=>x.id===j.order_id);
+  if(o&&o.status==="measurement"&&confirm("Ўлчов бажарилди. Буюртмани «Нарх таклифи» босқичига ўтказайликми?"))
+   await sb.from("crm_orders").update({status:"quotation"}).eq("id",o.id).eq("company_id",companyId);
+ }
+ await reload();closeSheet();toast("Вазифа сақланди ✓");
+}
+async function deleteJob(id,btn){
+ if(!confirm("Вазифа бутунлай ўчирилсинми? Бу амални қайтариб бўлмайди."))return;
+ const done=busy(btn,"Ўчирилмоқда…");
+ await removeJobFiles(id);
+ const {error}=await sb.from("crm_jobs").delete().eq("id",id).eq("company_id",companyId);
+ done();if(error)return reportError("Вазифани ўчиришда хатолик",error);
+ await reload();closeSheet();toast("Вазифа ўчирилди");
+}
+
+/* ---------- Расмлар ---------- */
+const jobDir=id=>companyId+"/jobs/"+id;
+async function loadPhotos(id){
+ const box=$("jPhotos"),msg=$("jPhotoMsg");if(!box)return;
+ const {data,error}=await sb.storage.from(BUCKET).list(jobDir(id),{limit:100,sortBy:{column:"created_at",order:"desc"}});
+ if($("sheet").dataset.id!==id)return;
+ if(error){msg.textContent="Расм омбори ҳали ёқилмаган (база янгиланиши керак).";return}
+ const files=(data||[]).filter(f=>f.name&&!f.name.startsWith("."));
+ if(!files.length){box.innerHTML="";msg.textContent="Ҳали расм йўқ.";return}
+ const paths=files.map(f=>jobDir(id)+"/"+f.name);
+ const {data:urls}=await sb.storage.from(BUCKET).createSignedUrls(paths,3600);
+ msg.textContent=files.length+" та расм";
+ box.innerHTML=(urls||[]).map((u,i)=>'<div><a href="'+esc(u.signedUrl)+'" target="_blank" rel="noopener"><img loading="lazy" src="'+esc(u.signedUrl)+'" alt="Расм '+(i+1)+'"></a><button aria-label="Ўчириш" onclick="deletePhoto(\''+esc(id)+'\',\''+esc(paths[i])+'\')">✕</button></div>').join("");
+}
+async function compressImage(file){
+ if(!file.type.startsWith("image/")||file.type==="image/gif")return file;
+ try{const bmp=await createImageBitmap(file);const k=Math.min(1,1600/Math.max(bmp.width,bmp.height));
+  const cv=document.createElement("canvas");cv.width=Math.round(bmp.width*k);cv.height=Math.round(bmp.height*k);cv.getContext("2d").drawImage(bmp,0,0,cv.width,cv.height);
+  const blob=await new Promise(r=>cv.toBlob(r,"image/jpeg",.82));return blob&&blob.size<file.size?blob:file}catch{return file}
+}
+async function uploadPhotos(id,input){
+ const files=[...input.files];if(!files.length)return;
+ const msg=$("jPhotoMsg");let ok=0,fail="";
+ for(let i=0;i<files.length;i++){
+  msg.textContent="Юкланмоқда "+(i+1)+" / "+files.length+"…";
+  const f=await compressImage(files[i]);
+  const ext=f.type==="image/jpeg"?"jpg":(files[i].name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");
+  const {error}=await sb.storage.from(BUCKET).upload(jobDir(id)+"/"+Date.now()+"-"+i+"."+ext,f,{contentType:f.type||"image/jpeg"});
+  if(error)fail=error.message;else ok++;
+ }
+ input.value="";
+ if(fail)alert("Баъзи расмлар юкланмади: "+fail);
+ if(ok)toast(ok+" та расм юкланди ✓");
+ loadPhotos(id);
+}
+async function deletePhoto(id,path){
+ if(!confirm("Расмни ўчирайликми?"))return;
+ const {error}=await sb.storage.from(BUCKET).remove([path]);
+ if(error)return reportError("Расмни ўчиришда хатолик",error);
+ loadPhotos(id);
+}
+async function removeJobFiles(id){try{const {data}=await sb.storage.from(BUCKET).list(jobDir(id),{limit:1000});if(data?.length)await sb.storage.from(BUCKET).remove(data.map(f=>jobDir(id)+"/"+f.name))}catch{}}
+
+/* ---------- Ҳисоботлар ---------- */
+function periodRange(){
+ const p=$("repPeriod").value,n=new Date();let from=null,to=null;
+ if(p==="month")from=new Date(n.getFullYear(),n.getMonth(),1);
+ else if(p==="prev"){from=new Date(n.getFullYear(),n.getMonth()-1,1);to=new Date(n.getFullYear(),n.getMonth(),1)}
+ else if(p==="quarter")from=new Date(n.getFullYear(),n.getMonth()-2,1);
+ else if(p==="year")from=new Date(n.getFullYear(),0,1);
+ return {from,to,in:d=>{if(!d)return false;const t=new Date(d);return(!from||t>=from)&&(!to||t<to)}};
+}
+const pct=(a,b)=>b?Math.round(a/b*100)+"%":"—";
+function renderReports(){
+ const R=periodRange(),out=[];
+ const signed=p=>(p.kind==="refund"?-1:1)*Number(p.amount);
+ if(canSell()||canFinance()){
+  const ps=payments.filter(p=>R.in(p.paid_at)),by={},byM={};
+  ps.forEach(p=>{by[p.currency]=(by[p.currency]||0)+signed(p);byM[p.method]=(byM[p.method]||0)+(p.currency==="UZS"?signed(p):0)});
+  const done=orders.filter(o=>o.status==="completed"&&R.in(o.updated_at||o.created_at));
+  const created=orders.filter(o=>R.in(o.created_at)&&o.status!=="cancelled");
+  const uzs=created.filter(o=>o.currency==="UZS"&&o.amount!=null);
+  out.push('<div class="sub2">Молия</div>'+(Object.keys(by).length?Object.keys(by).map(k=>'<div class="kpirow"><span>Тушум</span><b>'+money(by[k],k)+'</b></div>').join(""):'<div class="kpirow"><span>Тушум</span><b>'+money(0)+'</b></div>')+
+   '<div class="kpirow"><span>Янги буюртмалар</span><b>'+created.length+' та</b></div>'+
+   '<div class="kpirow"><span>Бажарилган буюртмалар</span><b>'+done.length+' та</b></div>'+
+   '<div class="kpirow"><span>Ўртача буюртма (сўм)</span><b>'+(uzs.length?money(uzs.reduce((a,o)=>a+Number(o.amount),0)/uzs.length):"—")+'</b></div>'+
+   (Object.keys(byM).length?'<div class="muted" style="margin-top:8px">Тўлов усуллари (сўм):</div>'+Object.keys(byM).map(k=>'<div class="kpirow"><span>'+esc(payMethod[k]||k)+'</span><b>'+money(byM[k])+'</b></div>').join(""):""));
+  const months=[];const n=new Date();for(let i=5;i>=0;i--){const d=new Date(n.getFullYear(),n.getMonth()-i,1);months.push(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"))}
+  const mv=months.map(m=>payments.filter(p=>p.currency==="UZS"&&String(p.paid_at).slice(0,7)===m).reduce((a,p)=>a+signed(p),0));
+  const max=Math.max(1,...mv);
+  out.push('<div class="sub2">Ойлик тушум (сўм, 6 ой)</div>'+months.map((m,i)=>'<div class="barrow"><span>'+m+'</span><div class="track"><span style="width:'+Math.max(0,mv[i]/max*100)+'%"></span></div><b>'+new Intl.NumberFormat("uz-UZ",{notation:"compact"}).format(mv[i])+'</b></div>').join(""));
+ }
+ if(canSell()){
+  const ls=leads.filter(l=>R.in(l.created_at));
+  const group=key=>{const g={};ls.forEach(l=>{const k=l[key]||"—";g[k]=g[k]||{n:0,won:0,lost:0,sum:0};g[k].n++;if(l.status==="won"){g[k].won++;g[k].sum+=orders.filter(o=>o.lead_id===l.id&&o.currency==="UZS"&&o.status!=="cancelled").reduce((a,o)=>a+(Number(o.amount)||0),0)}if(l.status==="lost")g[k].lost++});return Object.entries(g).sort((a,b)=>b[1].n-a[1].n)};
+  const tbl=(title,rows)=>'<div class="sub2">'+title+'</div>'+(rows.length?'<table class="tbl"><tr><th></th><th class="r">Лид</th><th class="r">Сотув</th><th class="r">Конв.</th><th class="r">Сумма</th></tr>'+rows.map(([k,v])=>'<tr><td>'+esc(k)+'</td><td class="r">'+v.n+'</td><td class="r">'+v.won+'</td><td class="r">'+pct(v.won,v.n)+'</td><td class="r">'+new Intl.NumberFormat("uz-UZ",{notation:"compact"}).format(v.sum)+'</td></tr>').join("")+'</table>':'<div class="empty">Бу даврда лид йўқ.</div>');
+  out.push('<div class="sub2">Лидлар</div><div class="kpirow"><span>Жами янги лидлар</span><b>'+ls.length+'</b></div><div class="kpirow"><span>Сотувга айланди</span><b>'+ls.filter(l=>l.status==="won").length+' ('+pct(ls.filter(l=>l.status==="won").length,ls.length)+')</b></div><div class="kpirow"><span>Йўқотилди</span><b>'+ls.filter(l=>l.status==="lost").length+'</b></div>');
+  out.push(tbl("Манбалар бўйича",group("source")));
+  out.push(tbl("Маҳсулотлар бўйича",group("title")));
+ }
+ if(isManager()&&staff.length){
+  const rows=staff.map(m=>{const js=jobs.filter(j=>j.assigned_to===m.user_id);return[m.is_me?"Мен":m.email,js.filter(j=>j.status==="completed"&&R.in(j.updated_at)).length,js.filter(openJob).length,js.filter(isOverdue).length,leads.filter(l=>l.created_by===m.user_id&&R.in(l.created_at)).length]});
+  out.push('<div class="sub2">Ходимлар</div><table class="tbl"><tr><th></th><th class="r">Лид</th><th class="r">Бажарди</th><th class="r">Очиқ</th><th class="r">Кечикди</th></tr>'+rows.map(r=>'<tr><td style="word-break:break-all">'+esc(r[0])+'</td><td class="r">'+r[4]+'</td><td class="r">'+r[1]+'</td><td class="r">'+r[2]+'</td><td class="r'+(r[3]?" due":"")+'">'+r[3]+'</td></tr>').join("")+'</table>');
+ }
+ $("reports").innerHTML=out.join("");
 }
 
 /* ---------- Ходимлар ---------- */
@@ -626,11 +1083,29 @@ async function staffPass(id,btn){
 }
 async function removeStaff(id,btn){
  const m=staff.find(x=>x.user_id===id);
- if(!confirm((m?.email||"Ходим")+" компаниядан чиқарилсинми? У энди CRM маълумотларини кўра олмайди."))return;
+ const open=jobs.filter(j=>j.assigned_to===id&&openJob(j)).length;
+ if(!confirm((m?.email||"Ходим")+" компаниядан чиқарилсинми? У энди CRM маълумотларини кўра олмайди."+(open?"\n\nДиққат: унда "+open+" та очиқ вазифа бор — уларни бошқа ходимга тайинланг.":"")))return;
  const done=busy(btn,"Чиқарилмоқда…");
  const r=await callFn("crm-members",{action:"remove",company_id:companyId,user_id:id});
  done();if(r.error)return alert(r.error);
  await reload();closeSheet();
+}
+
+/* ---------- Созламалар ва хабарномалар ---------- */
+async function saveSettings(btn){
+ const lines=id=>[...new Set($(id).value.split("\n").map(x=>x.trim()).filter(Boolean))];
+ const p=lines("setProducts"),s=lines("setSources");
+ if(!p.length||!s.length)return alert("Камида битта маҳсулот ва битта манба бўлсин.");
+ const done=busy(btn,"Сақланмоқда…");
+ const {error}=await sb.from("crm_company_settings").upsert({company_id:companyId,products:p,sources:s});
+ done();if(error)return reportError("Созламаларни сақлашда хатолик",error);
+ $("setProducts").blur();$("setSources").blur();await reload();toast("Созламалар сақланди ✓");
+}
+async function enableNotifications(btn){
+ if(!("Notification" in window))return alert("Бу браузер хабарномаларни қўллаб-қувватламайди. iPhone’да аввал иловани «На экран Домой» орқали ўрнатинг.");
+ const p=await Notification.requestPermission();
+ if(p==="granted"){btn.textContent="🔔 Хабарномалар ёқилган ✓";notify("Хабарномалар ёқилди","Янги вазифа ва эслатмалар шу ерда кўринади")}
+ else alert("Хабарномага рухсат берилмади. Браузер созламаларидан рухсат беринг.");
 }
 
 /* ---------- Jarvis ---------- */
@@ -644,6 +1119,7 @@ function openJarvis(){
   '<div class="row" style="margin-top:8px"><input id="jText" placeholder="Ёки ёзинг…" onkeydown="if(event.key===\'Enter\')jSendText()"><button class="btn soft" style="margin-top:0" onclick="jSendText()">Юбориш</button></div>'+
   '<label style="display:flex;align-items:center;gap:8px;margin-top:8px"><input type="checkbox" style="width:20px;height:20px" id="jMute"'+(jMuted()?" checked":"")+' onchange="try{localStorage.setItem(\'jarvisMute\',this.checked?\'1\':\'0\')}catch{}">Овозли жавобни ўчириш</label>'+
   '<div id="jOut"></div>');
+ Object.assign($("sheet").dataset,{kind:"jarvis",id:""});
 }
 function jSetStatus(t){const e=$("jStatus");if(e)e.textContent=t}
 async function jToggle(){
@@ -713,13 +1189,13 @@ function jOrderPick(a){
 function jOrderSelect(cur){const o={"":"— Буюртмани танланг —"};orders.filter(x=>x.status!=="cancelled").forEach(x=>o[x.id]=(x.reference_code||"")+" • "+custName(x)+(x.amount!=null?" • қолдиқ "+money(debtFor(x),x.currency):""));return '<select id="jfOrder">'+opts(o,cur||"")+'</select>'}
 function jForm(a){
  const btn='<button class="btn primary" onclick="jExec(this)">✓ Бажариш</button><button class="btn soft" onclick="$(\'jOut\').innerHTML=\'\'">Бекор қилиш</button>';
- if(a.type==="create_lead")return '<div class="card" style="margin-top:10px"><h3>Янги лид</h3>'+
+ if(a.type==="create_lead"){const d=findCustomerByPhone(a.phone);return '<div class="card" style="margin-top:10px"><h3>Янги лид</h3>'+
   '<label>Мижоз / компания</label><input id="jfName" value="'+esc(a.name)+'">'+
-  '<label>Телефон</label><input id="jfPhone" type="tel" value="'+esc(a.phone)+'">'+
-  '<div class="row"><div><label>Манба</label><select id="jfSource">'+opts({Instagram:"Instagram",Telegram:"Telegram",WhatsApp:"WhatsApp",Telefon:"Telefon",Tavsiya:"Tavsiya"},a.source||"Telefon")+'</select></div><div><label>Маҳсулот</label><select id="jfProduct">'+opts({Markiza:"Markiza",Zontik:"Zontik",Pergola:"Pergola","ZIP Screen":"ZIP Screen"},a.product||"Markiza")+'</select></div></div>'+
+  '<label>Телефон</label><input id="jfPhone" type="tel" value="'+esc(a.phone)+'">'+(d?'<div class="hint">Бу рақам мавжуд мижозга тегишли: '+esc(d.name)+'</div>':"")+
+  '<div class="row"><div><label>Манба</label><select id="jfSource">'+listOpts(sources(),a.source||"Telefon")+'</select></div><div><label>Маҳсулот</label><select id="jfProduct">'+listOpts(products(),a.product||products()[0])+'</select></div></div>'+
   '<label>Манзил</label><input id="jfAddr" value="'+esc(a.address)+'">'+
   '<label>Тахминий сумма (сўм)</label><input id="jfAmount" type="number" inputmode="numeric" value="'+esc(a.estimated_amount??"")+'">'+
-  '<label>Изоҳ</label><textarea id="jfNotes">'+esc(a.notes)+'</textarea>'+btn+'</div>';
+  '<label>Изоҳ</label><textarea id="jfNotes">'+esc(a.notes)+'</textarea>'+btn+'</div>'}
  if(a.type==="update_lead_status"){const l=jMatch(leads,custName,a.customer_name);const lo={"":"— Лидни танланг —"};leads.forEach(x=>lo[x.id]=custName(x)+" • "+x.title+" • "+leadStatus[x.status]);
   return '<div class="card" style="margin-top:10px"><h3>Лид ҳолатини ўзгартириш</h3><label>Лид</label><select id="jfLead">'+opts(lo,l?.id||"")+'</select><label>Янги ҳолат</label><select id="jfStatus">'+opts(leadStatus,a.status||"contacted")+'</select>'+btn+'</div>'}
  if(a.type==="add_payment"){const o=jOrderPick(a);
@@ -727,20 +1203,23 @@ function jForm(a){
   '<div class="row"><div><label>Тури</label><select id="jfKind">'+opts(payKind,a.kind||"payment")+'</select></div><div><label>Усули</label><select id="jfMethod">'+opts(payMethod,a.method||"cash")+'</select></div></div>'+
   '<label>Сумма</label><input id="jfAmount" type="number" inputmode="numeric" value="'+esc(a.amount??"")+'">'+btn+'</div>'}
  if(a.type==="create_job"){const o=jOrderPick(a);const asg=a.assignee&&staff.length?jMatch(staff.filter(m=>!m.is_me),m=>m.email,a.assignee):null;
+  const kinds={};Object.keys(jobKind).forEach(k=>{if(canJob(k,"create"))kinds[k]=jobKind[k]});
   return '<div class="card" style="margin-top:10px"><h3>Вазифа белгилаш</h3><label>Буюртма</label>'+jOrderSelect(o?.id)+
-  '<label>Тури</label><select id="jfKind">'+opts(jobKind,a.kind||"measurement")+'</select>'+
+  '<label>Тури</label><select id="jfKind">'+opts(kinds,a.kind||"measurement")+'</select>'+
   '<label>Сана ва вақт</label><input id="jfWhen" type="datetime-local" value="'+esc(String(a.when||"").slice(0,16))+'">'+
   assignSelect("jfAssign",asg?.user_id)+'<label>Изоҳ</label><textarea id="jfNotes">'+esc(a.notes)+'</textarea>'+btn+'</div>'}
  return "";
 }
 async function jExec(btn){
  jUnlockAudio();
- const a=jAction;const done=busy(btn,"Бажарилмоқда…");let msg="",err=null;
+ const a=jAction;let msg="",err=null;
+ if(a.type==="create_lead"){const d=findCustomerByPhone(val("jfPhone"));if(d&&!confirm("Бу телефон рақам «"+d.name+"» мижозига тегишли. Янги лидни шу мижозга қўшайликми?"))return;a._customer=d?.id||null}
+ const done=busy(btn,"Бажарилмоқда…");
  try{
   if(a.type==="create_lead"){
    const name=val("jfName");if(!name)throw new Error("Мижоз номини киритинг.");
    const amt=numOrNull(val("jfAmount"));
-   await createLeadRecord({name,phone:val("jfPhone"),address:val("jfAddr"),source:$("jfSource").value,product:$("jfProduct").value,notes:val("jfNotes"),estimated_amount:isNaN(amt)?null:amt});
+   await createLeadRecord({name,phone:val("jfPhone"),address:val("jfAddr"),source:$("jfSource").value,product:$("jfProduct").value,notes:val("jfNotes"),estimated_amount:isNaN(amt)?null:amt,customer_id:a._customer});
    msg="Лид сақланди: "+name;
   }else if(a.type==="update_lead_status"){
    const id=$("jfLead").value;if(!id)throw new Error("Лидни танланг.");
@@ -754,10 +1233,10 @@ async function jExec(btn){
   }else if(a.type==="create_job"){
    const o=orders.find(x=>x.id===$("jfOrder").value);if(!o)throw new Error("Буюртмани танланг.");
    const kind=$("jfKind").value,when=val("jfWhen"),c=customerMap.get(o.customer_id)||{};
-   const row={company_id:companyId,order_id:o.id,kind,title:jobKind[kind]+": "+o.title,scheduled_at:when?new Date(when).toISOString():null,address:c.address||null,contact_phone:c.phone||null,notes:val("jfNotes")||null,status:"scheduled",progress:0,created_by:currentUser.id};
+   const row={company_id:companyId,order_id:o.id,kind,title:jobKind[kind]+": "+o.title,scheduled_at:fromLocalInput(when),address:c.address||null,contact_phone:c.phone||null,notes:val("jfNotes")||null,status:"scheduled",progress:0,created_by:currentUser.id};
    if($("jfAssign"))row.assigned_to=$("jfAssign").value||null;
    const {error}=await sb.from("crm_jobs").insert(row);if(error)throw error;
-   msg=jobKind[kind]+" вазифаси белгиланди"+(when?": "+fmtDT(new Date(when).toISOString()):"");
+   msg=jobKind[kind]+" вазифаси белгиланди"+(when?": "+fmtDT(fromLocalInput(when)):"");
   }
  }catch(e){err=e}
  done();
@@ -765,13 +1244,13 @@ async function jExec(btn){
  await reload();$("jOut").innerHTML='<div class="alert ok">✓ '+esc(msg)+'</div>';jSpeak(msg);
 }
 function jQuery(q){
- const open=jobs.filter(j=>["scheduled","in_progress"].includes(j.status));
+ const open=jobs.filter(openJob);
  const today=new Date().toDateString();
- const line=j=>j.title+" — "+fmtDT(j.scheduled_at)+(j.assigned_to?" ("+(j.assigned_to===currentUser.id?"сиз":staffName(j.assigned_to)||"ходим")+")":"");
- if(q==="today_jobs"){const t=open.filter(j=>j.scheduled_at&&new Date(j.scheduled_at).toDateString()===today);return t.length?"Бугун "+t.length+" та иш бор: "+t.map(line).join("; ")+".":"Бугунга режалаштирилган ўлчов ёки монтаж йўқ."}
+ const line=j=>j.title+" — "+fmtDT(j.scheduled_at)+(j.assigned_to?" ("+(staffName(j.assigned_to)||"ходим")+")":"");
+ if(q==="today_jobs"){const t=open.filter(j=>j.scheduled_at&&new Date(j.scheduled_at).toDateString()===today);const od=open.filter(isOverdue).length;return (t.length?"Бугун "+t.length+" та иш бор: "+t.map(line).join("; ")+".":"Бугунга режалаштирилган ўлчов ёки монтаж йўқ.")+(od?" Муддати ўтган "+od+" та иш ҳам бор.":"")}
  if(q==="my_jobs"){const t=open.filter(j=>j.assigned_to===currentUser.id);return t.length?"Сизда "+t.length+" та очиқ вазифа бор: "+t.map(line).join("; ")+".":"Сизга тайинланган очиқ вазифа йўқ."}
  if(q==="debts"){if(!(canSell()||canFinance()))return "Бу маълумотни кўришга рухсатингиз йўқ.";const d=orders.filter(o=>debtFor(o)>0);if(!d.length)return "Ҳозир қарздор мижоз йўқ.";const by={};d.forEach(o=>by[o.currency]=(by[o.currency]||0)+debtFor(o));return "Мижозлар қарзи: "+Object.keys(by).map(k=>money(by[k],k)).join(", ")+". Қарздорлар: "+d.slice(0,5).map(o=>custName(o)+" — "+money(debtFor(o),o.currency)).join("; ")+"."}
- if(q==="new_leads"){if(!canSell())return "Бу маълумотни кўришга рухсатингиз йўқ.";const n=leads.filter(l=>l.status==="new");return n.length?n.length+" та янги лид бор: "+n.slice(0,6).map(custName).join(", ")+".":"Янги лид йўқ."}
+ if(q==="new_leads"){if(!canSell())return "Бу маълумотни кўришга рухсатингиз йўқ.";const n=leads.filter(l=>l.status==="new");const due=leads.filter(leadDue).length;return (n.length?n.length+" та янги лид бор: "+n.slice(0,6).map(custName).join(", ")+".":"Янги лид йўқ.")+(due?" Бугун "+due+" та мижозга қўнғироқ қилиш керак.":"")}
  if(q==="month_income"){if(!(canSell()||canFinance()))return "Бу маълумотни кўришга рухсатингиз йўқ.";const m=todayISO().slice(0,7),by={};payments.filter(p=>String(p.paid_at).slice(0,7)===m).forEach(p=>by[p.currency]=(by[p.currency]||0)+(p.kind==="refund"?-1:1)*Number(p.amount));const k=Object.keys(by);return k.length?"Шу ой тушум: "+k.map(c=>money(by[c],c)).join(", ")+".":"Шу ой ҳали тўлов тушмаган."}
  if(!(canSell()||canFinance()))return "Сизда "+open.filter(j=>j.assigned_to===currentUser.id).length+" та очиқ вазифа бор.";
  const debt=orders.reduce((s,o)=>s+(o.currency==="UZS"?debtFor(o):0),0);
@@ -779,28 +1258,66 @@ function jQuery(q){
 }
 
 /* ---------- Янги лид ---------- */
-async function createLeadRecord({name,phone,address,source,product,notes,estimated_amount}){
- const {data:customer,error:ce}=await sb.from("crm_customers").insert({company_id:companyId,name,phone:phone||null,address:address||null,created_by:currentUser.id}).select("id").single();
- if(ce)throw ce;
- const {error:le}=await sb.from("crm_leads").insert({company_id:companyId,customer_id:customer.id,title:product||"Markiza",source:source||"Telefon",notes:notes||null,status:"new",estimated_amount:estimated_amount??null,created_by:currentUser.id});
- if(le){await sb.from("crm_customers").delete().eq("id",customer.id).eq("company_id",companyId);throw le}
+async function createLeadRecord({name,phone,address,source,product,notes,estimated_amount,customer_id,next_contact_at}){
+ if(feat.rpc){
+  const {error}=await sb.rpc("crm_create_lead",{p_company_id:companyId,p_name:name,p_phone:phone||null,p_address:address||null,p_source:source||"Telefon",p_product:product||products()[0],p_notes:notes||null,p_estimated_amount:estimated_amount??null,p_customer_id:customer_id||null,p_next_contact_at:feat.next?(next_contact_at||null):null});
+  if(!error)return;
+  if(error.code!=="PGRST202")throw error;
+  feat.rpc=false;
+ }
+ let cid=customer_id;
+ if(!cid){const {data:customer,error:ce}=await sb.from("crm_customers").insert({company_id:companyId,name,phone:phone||null,address:address||null,created_by:currentUser.id}).select("id").single();if(ce)throw ce;cid=customer.id}
+ const row={company_id:companyId,customer_id:cid,title:product||products()[0],source:source||"Telefon",notes:notes||null,status:"new",estimated_amount:estimated_amount??null,created_by:currentUser.id};
+ if(feat.next&&next_contact_at)row.next_contact_at=next_contact_at;
+ const {error:le}=await sb.from("crm_leads").insert(row);
+ if(le){if(!customer_id)await sb.from("crm_customers").delete().eq("id",cid).eq("company_id",companyId);throw le}
 }
-async function addLead(){
+async function addLead(btn){
  const name=val("leadName");
  if(!name)return alert("Мижоз номини киритинг.");
+ const amount=numOrNull(val("leadAmount"));
+ if(amount!==null&&(isNaN(amount)||amount<0))return alert("Сумма нотўғри.");
+ const d=findCustomerByPhone(val("leadPhone"));
+ if(d&&!confirm("Бу телефон рақам «"+d.name+"» мижозига тегишли.\n\nOK — янги лидни шу мижозга қўшиш.\nБекор — ҳеч нарса сақланмайди, рақамни текширинг."))return;
+ const done=busy(btn,"Сақланмоқда…");
  try{
-  await createLeadRecord({name,phone:val("leadPhone"),address:val("leadCity"),source:$("leadSource").value,product:$("leadProduct").value,notes:val("leadNotes")});
-  ["leadName","leadPhone","leadCity","leadNotes"].forEach(i=>$(i).value="");
-  await loadData();alert("Мижоз ва лид CRM базасига сақланди.");
- }catch(e){reportError("Сақлашда хатолик",e)}
+  await createLeadRecord({name,phone:val("leadPhone"),address:val("leadCity"),source:$("leadSource").value,product:$("leadProduct").value,notes:val("leadNotes"),estimated_amount:amount,customer_id:d?.id||null,next_contact_at:fromLocalInput(val("leadNext"))});
+  ["leadName","leadPhone","leadCity","leadNotes","leadAmount","leadNext"].forEach(i=>$(i).value="");$("leadPhoneHint").textContent="";
+  done();await reload();toast(d?"Лид мавжуд мижозга қўшилди ✓":"Мижоз ва лид сақланди ✓");
+ }catch(e){done();reportError("Сақлашда хатолик",e)}
 }
-function exportData(){
- const blob=new Blob([JSON.stringify({companyId,customers,leads,orders,jobs,payments},null,2)],{type:"application/json"});
- const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="VAYQEN_CRM_backup_"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+
+/* ---------- Экспорт ---------- */
+function download(name,blob){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500)}
+function exportData(){download("VAYQEN_CRM_backup_"+todayISO()+".json",new Blob([JSON.stringify({companyId,exported_at:new Date().toISOString(),customers,leads,orders,jobs,payments,notes,settings},null,2)],{type:"application/json"}))}
+function exportCSV(kind){
+ const cn=id=>(customerMap.get(id)||{}).name||"",cp=id=>(customerMap.get(id)||{}).phone||"";
+ const ref=id=>(orders.find(o=>o.id===id)||{}).reference_code||"";
+ const defs={
+  customers:{rows:customers,cols:[["Исм",r=>r.name],["Телефон",r=>r.phone],["Telegram",r=>r.telegram],["Манзил",r=>r.address],["Изоҳ",r=>r.notes],["Қўшилган",r=>fmtDate(r.created_at)]]},
+  leads:{rows:leads,cols:[["Мижоз",r=>cn(r.customer_id)],["Телефон",r=>cp(r.customer_id)],["Маҳсулот",r=>r.title],["Манба",r=>r.source],["Ҳолати",r=>leadStatus[r.status]],["Тахминий сумма",r=>r.estimated_amount],["Кейинги алоқа",r=>r.next_contact_at?fmtDT(r.next_contact_at):""],["Изоҳ",r=>r.notes],["Қўшилган",r=>fmtDate(r.created_at)]]},
+  orders:{rows:orders,cols:[["Рақам",r=>r.reference_code],["Мижоз",r=>cn(r.customer_id)],["Телефон",r=>cp(r.customer_id)],["Номи",r=>r.title],["Ҳолати",r=>orderStatus[r.status]],["Сумма",r=>r.amount],["Валюта",r=>r.currency],["Тўланган",r=>paidFor(r)],["Қолдиқ",r=>debtFor(r)],["Тавсиф",r=>r.description],["Яратилган",r=>fmtDate(r.created_at)]]},
+  payments:{rows:payments,cols:[["Сана",r=>r.paid_at],["Буюртма",r=>ref(r.order_id)],["Мижоз",r=>cn((orders.find(o=>o.id===r.order_id)||{}).customer_id)],["Тури",r=>payKind[r.kind]],["Усули",r=>payMethod[r.method]],["Сумма",r=>(r.kind==="refund"?-1:1)*Number(r.amount)],["Валюта",r=>r.currency],["Изоҳ",r=>r.note]]},
+  jobs:{rows:jobs,cols:[["Тури",r=>jobKind[r.kind]],["Номи",r=>r.title],["Буюртма",r=>ref(r.order_id)],["Вақти",r=>r.scheduled_at?fmtDT(r.scheduled_at):""],["Масъул",r=>staffName(r.assigned_to)],["Манзил",r=>r.address],["Телефон",r=>r.contact_phone],["Эни см",r=>r.width_cm],["Чиқиши см",r=>r.projection_cm],["Ҳолати",r=>jobStatus[r.status]],["Бажарилиши %",r=>r.progress],["Натижа",r=>r.result_notes]]}
+ };
+ const d=defs[kind];if(!d.rows.length)return alert("Экспорт учун маълумот йўқ.");
+ const cell=v=>{const s=String(v??"");return /[;"\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+ const csv="﻿"+[d.cols.map(c=>c[0]).join(";"),...d.rows.map(r=>d.cols.map(c=>cell(c[1](r))).join(";"))].join("\r\n");
+ download("VAYQEN_"+kind+"_"+todayISO()+".csv",new Blob([csv],{type:"text/csv;charset=utf-8"}));
 }
+
+/* ---------- Ишга тушириш ---------- */
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
 $("authPassword").addEventListener("keydown",e=>{if(e.key==="Enter")signIn()});
-sb.auth.onAuthStateChange((_event,session)=>{if(session&&!currentUser){currentUser=session.user;setTimeout(boot,0)}});
+sb.auth.onAuthStateChange((event,session)=>{
+ if(event==="PASSWORD_RECOVERY"){recovery=true;if(currentUser&&$("appShell").style.display==="block")setTimeout(()=>openPasswordSheet(true),0)}
+ if(session&&!currentUser){currentUser=session.user;setTimeout(boot,0)}
+});
+window.addEventListener("online",()=>{if(currentUser){reload(true);subscribeRealtime()}});
+window.addEventListener("offline",()=>{$("offBar").textContent="Интернет йўқ — ўзгаришлар сақланмайди";$("offBar").classList.remove("hide")});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&currentUser&&companyId)reload(true)});
+setInterval(()=>{if(!currentUser||!companyId)return;checkReminders();if(!document.hidden)reload(true)},60000);
+if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
 boot();
 </script>
 </body>
